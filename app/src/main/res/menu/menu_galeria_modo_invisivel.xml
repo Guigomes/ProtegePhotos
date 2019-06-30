@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".GlideActivity">
+
+    <item
+        android:id="@+id/action_cancelar_selecao"
+        android:orderInCategory="100"
+        android:title="@string/btn_cancelar_selecao"
+        app:showAsAction="ifRoom"
+        android:visible="false"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+
+        />
+
+
+    <item
+        android:id="@+id/action_alterar_senha"
+        android:orderInCategory="100"
+        android:title="@string/btn_alterar_senha"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_remover_modo_invisivel"
+        android:orderInCategory="100"
+        android:title="Remover pasta do modo invísivel"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/share"
+        android:actionProviderClass="android.widget.ShareActionProvider"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="Share"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_alterar_nome_pasta"
+        android:orderInCategory="200"
+        android:title="@string/btn_alterar_nome_pasta"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_excluir_pasta"
+        android:orderInCategory="200"
+        android:title="@string/btn_excluir_pasta"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add_imagem"
+        android:orderInCategory="300"
+        android:title="Anexar Foto"
+
+        android:icon="@android:drawable/ic_menu_upload"
+        app:showAsAction="ifRoom"></item>
+
+    <item
+        android:id="@+id/action_new_folder"
+        android:orderInCategory="300"
+        android:title="Nova Pasta"
+        android:tint="@color/colorPrimary"
+
+        android:icon="@mipmap/ic_create_new_folder_white_24dp"
+        app:showAsAction="ifRoom"></item>
+
+    <item
+        android:id="@+id/action_excluir_imagem"
+        android:orderInCategory="300"
+        android:title="Deletar Foto"
+        android:visible="false"
+        android:icon="@android:drawable/ic_menu_delete"
+        app:showAsAction="ifRoom"></item>
+</menu>
