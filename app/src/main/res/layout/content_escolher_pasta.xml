@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ggsoftware.com.br.protegephotospro.EscolherPastaActivity"
+    tools:context="ggsoftware.com.br.protegephotospro.activitys.EscolherPastaActivity"
     tools:showIn="@layout/activity_escolher_pasta">
 
     <ListView

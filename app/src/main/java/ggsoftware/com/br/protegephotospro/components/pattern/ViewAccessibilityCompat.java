@@ -3,7 +3,7 @@
  * All Rights Reserved.
  */
 
-package me.zhanghai.android.patternlock;
+package ggsoftware.com.br.protegephotospro.components.pattern;
 
 import android.annotation.TargetApi;
 import android.content.Context;

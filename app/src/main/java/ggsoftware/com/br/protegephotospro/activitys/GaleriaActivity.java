@@ -1,4 +1,4 @@
-package ggsoftware.com.br.protegephotospro;
+package ggsoftware.com.br.protegephotospro.activitys;
 
 
 import android.content.ClipData;
@@ -41,13 +41,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import ggsoftware.com.br.protegephotospro.utils.ImageSaver;
+import ggsoftware.com.br.protegephotospro.R;
+import ggsoftware.com.br.protegephotospro.entidades.Foto;
 import ggsoftware.com.br.protegephotospro.dao.ImageDAO;
 import ggsoftware.com.br.protegephotospro.dao.ImagemVO;
 import ggsoftware.com.br.protegephotospro.dao.PastaDAO;
 import ggsoftware.com.br.protegephotospro.dao.PastaVO;
-import me.zhanghai.android.patternlock.ConfirmPatternActivity;
+import ggsoftware.com.br.protegephotospro.components.pattern.ConfirmPatternActivity;
 
-public class GlideActivity extends AppCompatActivity {
+public class GaleriaActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     private static final int PICK_IMAGE = 1;
     PastaVO pastaSelecionada;
@@ -55,7 +58,7 @@ public class GlideActivity extends AppCompatActivity {
     ImageDAO imagemDAO;
     private ProgressBar spinner;
 
-    private List<SpacePhoto> mSpacePhotos;
+    private List<Foto> mFotos;
     private Context mContext;
 
     ArrayList<ImageGalleryAdapter.MyViewHolder> views = new ArrayList<>();
@@ -66,13 +69,13 @@ public class GlideActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-      //  super.onBackPressed();
+        //  super.onBackPressed();
 
         setResult(123, new Intent());
         finish();//finishing activity
         // finish();
 
-      //  Intent it = new Intent(GlideActivity.this, EscolherPastaActivity.class);
+        //  Intent it = new Intent(GaleriaActivity.this, EscolherPastaActivity.class);
 //        startActivity(it);
 
     }
@@ -84,8 +87,8 @@ public class GlideActivity extends AppCompatActivity {
 
         Toast.makeText(getApplicationContext(), "OnCreate CHAMADO", Toast.LENGTH_LONG).show();
 
-        List<SpacePhoto> mSpacePhotos = new ArrayList<>();
-        pastaDAO = new PastaDAO(GlideActivity.this);
+        List<Foto> mFotos = new ArrayList<>();
+        pastaDAO = new PastaDAO(GaleriaActivity.this);
 
         spinner = (ProgressBar) findViewById(R.id.progressBar1);
 
@@ -111,7 +114,7 @@ public class GlideActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        imagemDAO = new ImageDAO(GlideActivity.this);
+        imagemDAO = new ImageDAO(GaleriaActivity.this);
 
 
         listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
@@ -120,7 +123,7 @@ public class GlideActivity extends AppCompatActivity {
         } else {
             ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.GONE);
         }
-        adapter = new ImageGalleryAdapter(this, SpacePhoto.getSpacePhotos(listaImagens));
+        adapter = new ImageGalleryAdapter(this, Foto.getSpacePhotos(listaImagens));
         recyclerView.setAdapter(adapter);
 
         registerForContextMenu(recyclerView);
@@ -133,7 +136,7 @@ public class GlideActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 
 
-            getMenuInflater().inflate(R.menu.menu_galeria_modo_invisivel, menu);
+        getMenuInflater().inflate(R.menu.menu_galeria_modo_invisivel, menu);
 
 
         return true;
@@ -169,15 +172,8 @@ public class GlideActivity extends AppCompatActivity {
                 removerPastasModoInvisivel();
                 break;
             case R.id.share:
-compartilharImagem();
-                /*
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                String shareBodyText = "Check it out. Your message goes here";
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,"Subject here");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
-                startActivity(Intent.createChooser(sharingIntent, "Shearing Option"));
-                */
+                compartilharImagem();
+
                 return true;
 
             default:
@@ -192,17 +188,17 @@ compartilharImagem();
         pastaSelecionada.setInvisivel(0);
         pastaDAO.updatePasta(pastaSelecionada);
 
-        startActivity(new Intent(GlideActivity.this, MainActivity.class));
-        Toast.makeText(GlideActivity.this, getString(R.string.msg_sucesso_remover_pasta_modo_invisivel), Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(GaleriaActivity.this, MainActivity.class));
+        Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_remover_pasta_modo_invisivel), Toast.LENGTH_SHORT).show();
     }
 
 
     private void alterarNomePasta() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GlideActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(GaleriaActivity.this);
         builder.setTitle(getString(R.string.txt_informe_nome_novo_pasta));
 
 
-        final EditText input = new EditText(GlideActivity.this);
+        final EditText input = new EditText(GaleriaActivity.this);
 
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setTextColor(Color.BLACK);
@@ -215,8 +211,8 @@ compartilharImagem();
 
                 pastaSelecionada.setNomePasta(novoNomePasta);
                 pastaDAO.updatePasta(pastaSelecionada);
-                startActivity(new Intent(GlideActivity.this, GlideActivity.class));
-                Toast.makeText(GlideActivity.this, getString(R.string.msg_sucesso_alterar_nome_pasta), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(GaleriaActivity.this, GaleriaActivity.class));
+                Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_alterar_nome_pasta), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -234,46 +230,45 @@ compartilharImagem();
 
     private void excluirImagem() {
         int count = adapter.getItemCount();
-        List<SpacePhoto> fotosAremover = new ArrayList<>();
+        List<Foto> fotosAremover = new ArrayList<>();
         for (int i = 0; i < count; i++) {
 
-            SpacePhoto spacePhoto = mSpacePhotos.get(i);
+            Foto foto = mFotos.get(i);
 
-            if (spacePhoto.getSelected() == 1) {
+            if (foto.getSelected() == 1) {
 
-                fotosAremover.add(spacePhoto);
-                new ImageDAO(GlideActivity.this).excluir(spacePhoto.getId());
+                fotosAremover.add(foto);
+                new ImageDAO(GaleriaActivity.this).excluir(foto.getId());
             }
 
 
         }
-        mSpacePhotos.removeAll(fotosAremover);
+        mFotos.removeAll(fotosAremover);
 
 
-        ImageGalleryAdapter adapter = new ImageGalleryAdapter(this, mSpacePhotos);
+        ImageGalleryAdapter adapter = new ImageGalleryAdapter(this, mFotos);
         recyclerView.setAdapter(adapter);
         cancelarSelecao();
 
 
     }
+
     private void compartilharImagem() {
         int count = adapter.getItemCount();
 
 
-
-
         for (int i = 0; i < count; i++) {
 
-            SpacePhoto spacePhoto = mSpacePhotos.get(i);
-            if (spacePhoto.getSelected() == 1) {
+            Foto foto = mFotos.get(i);
+            if (foto.getSelected() == 1) {
                 try {
-                    Toast.makeText(this, spacePhoto.getFilepath(), Toast.LENGTH_SHORT).show();
-                    File file = new ImageSaver(GlideActivity.this).loadFile(spacePhoto.getTitle());
+                    Toast.makeText(this, foto.getFilepath(), Toast.LENGTH_SHORT).show();
+                    File file = new ImageSaver(GaleriaActivity.this).loadFile(foto.getTitle());
 
                     File imagePath = new File(getFilesDir(), "app_images");
-                    File newFile = new File(imagePath, spacePhoto.getTitle());
+                    File newFile = new File(imagePath, foto.getTitle());
 
-                    Uri imageUri = FileProvider.getUriForFile(GlideActivity.this,
+                    Uri imageUri = FileProvider.getUriForFile(GaleriaActivity.this,
                             getString(R.string.file_provider_authority),
                             newFile);
 
@@ -281,11 +276,11 @@ compartilharImagem();
                     Intent shareIntent = new Intent();
                     shareIntent.setAction(Intent.ACTION_SEND);
                     shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     shareIntent.setType("image/*");
                     // Launch sharing dialog for image
                     startActivity(Intent.createChooser(shareIntent, "Share Image"));
-                }catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -294,18 +289,17 @@ compartilharImagem();
         }
 
 
-
         cancelarSelecao();
 
 
-
     }
+
     private void criarNovaPasta() {
-        AlertDialog.Builder builder2 = new AlertDialog.Builder(GlideActivity.this);
+        AlertDialog.Builder builder2 = new AlertDialog.Builder(GaleriaActivity.this);
         builder2.setTitle(getString(R.string.txt_informe_nome_pasta));
 
 
-        final EditText input2 = new EditText(GlideActivity.this);
+        final EditText input2 = new EditText(GaleriaActivity.this);
 
         input2.setInputType(InputType.TYPE_CLASS_TEXT);
         input2.setTextColor(Color.BLACK);
@@ -316,7 +310,7 @@ compartilharImagem();
             public void onClick(DialogInterface dialog, int which) {
                 String m_Text = input2.getText().toString();
 
-                Intent it = new Intent(GlideActivity.this, SampleSetPatternActivity.class);
+                Intent it = new Intent(GaleriaActivity.this, EscolherPadraoActivity.class);
 
                 it.putExtra("idPasta", -1);
                 it.putExtra("nomePasta", m_Text);
@@ -335,8 +329,8 @@ compartilharImagem();
     }
 
     private void alterarSenhaPasta() {
-        Intent it = new Intent(GlideActivity.this,
-                SampleSetPatternActivity.class);
+        Intent it = new Intent(GaleriaActivity.this,
+                EscolherPadraoActivity.class);
 
         int idPasta = pastaSelecionada.getId();
         String nomePasta = pastaSelecionada.getNomePasta();
@@ -351,22 +345,21 @@ compartilharImagem();
 
     }
 
-    private void excluirPasta(){
-        PastaDAO pastaDAO = new PastaDAO(GlideActivity.this);
+    private void excluirPasta() {
+        PastaDAO pastaDAO = new PastaDAO(GaleriaActivity.this);
 
         pastaDAO.excluir(pastaSelecionada.getId());
 
-        Toast.makeText(GlideActivity.this, getString(R.string.msg_sucesso_deletar_pasta), Toast.LENGTH_SHORT).show();
+        Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_deletar_pasta), Toast.LENGTH_SHORT).show();
 
-        startActivity(new Intent(GlideActivity.this, MainActivity.class));
-
-
+        startActivity(new Intent(GaleriaActivity.this, MainActivity.class));
 
 
     }
+
     private void cancelarSelecao() {
 
-        for (SpacePhoto foto : mSpacePhotos) {
+        for (Foto foto : mFotos) {
             foto.setSelected(0);
         }
 
@@ -382,7 +375,7 @@ compartilharImagem();
 
         }
         modoSelecao = false;
-        GlideActivity.this.invalidateOptionsMenu();
+        GaleriaActivity.this.invalidateOptionsMenu();
     }
 
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -394,7 +387,7 @@ compartilharImagem();
 
             menu.findItem(R.id.action_alterar_senha).setVisible(false);
 
-                menu.findItem(R.id.action_new_folder).setVisible(false);
+            menu.findItem(R.id.action_new_folder).setVisible(false);
 
         } else {
             menu.findItem(R.id.action_excluir_imagem).setVisible(false);
@@ -402,7 +395,7 @@ compartilharImagem();
             menu.findItem(R.id.action_add_imagem).setVisible(true);
             menu.findItem(R.id.action_alterar_senha).setVisible(true);
 
-                menu.findItem(R.id.action_new_folder).setVisible(true);
+            menu.findItem(R.id.action_new_folder).setVisible(true);
 
         }
         return true;
@@ -452,25 +445,24 @@ compartilharImagem();
             String pattern = (String) imageReturnedIntent.getExtras().get("pattern");
 
 
-
-            PastaDAO pastaDAO = new PastaDAO(GlideActivity.this);
+            PastaDAO pastaDAO = new PastaDAO(GaleriaActivity.this);
             PastaVO pastaVO = pastaDAO.buscarPorNome(nomePasta);
             if (pastaVO == null) {
-                boolean sucesso = pastaDAO.salvarPasta(nomePasta, pattern, SampleSetPatternActivity.isPastaVisivel);
+                boolean sucesso = pastaDAO.salvarPasta(nomePasta, pattern, EscolherPadraoActivity.isPastaVisivel);
 
 
                 if (sucesso) {
-                    Toast.makeText(GlideActivity.this, getString(R.string.msg_sucesso_criar_pasta), Toast.LENGTH_SHORT).show();
-                    Intent it = new Intent(GlideActivity.this, GlideActivity.class);
+                    Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_criar_pasta), Toast.LENGTH_SHORT).show();
+                    Intent it = new Intent(GaleriaActivity.this, GaleriaActivity.class);
                     it.putExtra("nomePasta", nomePasta);
                     startActivity(it);
                     finish();
 
                 } else {
-                    Toast.makeText(GlideActivity.this, getString(R.string.msg_erro_criar_pasta), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GaleriaActivity.this, getString(R.string.msg_erro_criar_pasta), Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(GlideActivity.this, getString(R.string.msg_pasta_repetida), Toast.LENGTH_SHORT).show();
+                Toast.makeText(GaleriaActivity.this, getString(R.string.msg_pasta_repetida), Toast.LENGTH_SHORT).show();
 
             }
 
@@ -481,7 +473,7 @@ compartilharImagem();
             String pattern = (String) imageReturnedIntent.getExtras().get("pattern");
 
 
-            PastaDAO pastaDAO = new PastaDAO(GlideActivity.this);
+            PastaDAO pastaDAO = new PastaDAO(GaleriaActivity.this);
             PastaVO pastaVO = pastaDAO.buscarPorNome(nomePasta);
             if (pastaVO != null) {
                 pastaVO.setSenhaPasta(pattern);
@@ -490,17 +482,17 @@ compartilharImagem();
 
 
                 if (sucesso) {
-                    Toast.makeText(GlideActivity.this, getString(R.string.msg_sucesso_alterar_senha), Toast.LENGTH_SHORT).show();
-                    Intent it = new Intent(GlideActivity.this, GlideActivity.class);
+                    Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_alterar_senha), Toast.LENGTH_SHORT).show();
+                    Intent it = new Intent(GaleriaActivity.this, GaleriaActivity.class);
                     it.putExtra("nomePasta", nomePasta);
                     startActivity(it);
                     finish();
 
                 } else {
-                    Toast.makeText(GlideActivity.this, getString(R.string.msg_erro_criar_pasta), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GaleriaActivity.this, getString(R.string.msg_erro_criar_pasta), Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(GlideActivity.this, getString(R.string.msg_pasta_nao_existe), Toast.LENGTH_SHORT).show();
+                Toast.makeText(GaleriaActivity.this, getString(R.string.msg_pasta_nao_existe), Toast.LENGTH_SHORT).show();
 
             }
 
@@ -538,16 +530,16 @@ compartilharImagem();
         @Override
         public void onBindViewHolder(ImageGalleryAdapter.MyViewHolder holder, int position) {
 
-            SpacePhoto spacePhoto = mSpacePhotos.get(position);
+            Foto foto = mFotos.get(position);
             ImageView imageView = holder.mPhotoImageView;
 
-            ImageSaver imageSaver = new ImageSaver(GlideActivity.this);
-            File file = imageSaver.loadFile(spacePhoto.getTitle());
+            ImageSaver imageSaver = new ImageSaver(GaleriaActivity.this);
+            File file = imageSaver.loadFile(foto.getTitle());
 
             holder.itemView.setLongClickable(true);
 
-            spacePhoto.setSelected(0);
-            spacePhoto.setFilepath(file.getAbsolutePath());
+            foto.setSelected(0);
+            foto.setFilepath(file.getAbsolutePath());
             views.add(holder);
 
             Glide.with(mContext)
@@ -560,7 +552,7 @@ compartilharImagem();
 
         @Override
         public int getItemCount() {
-            return (mSpacePhotos.size());
+            return (mFotos.size());
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -585,25 +577,25 @@ compartilharImagem();
                 int position = getAdapterPosition();
 
                 if (position != RecyclerView.NO_POSITION) {
-                    SpacePhoto spacePhoto = mSpacePhotos.get(position);
+                    Foto foto = mFotos.get(position);
 
                     if (modoSelecao) {
                         ImageView imagem = (ImageView) view.findViewById(R.id.iv_photo);
                         ImageView imgCheck = (ImageView) view.findViewById(R.id.imgCheck);
 
-                        if (spacePhoto.getSelected() == 0) {
+                        if (foto.getSelected() == 0) {
                             imagem.setPadding(30, 30, 30, 30);
                             imgCheck.setVisibility(View.VISIBLE);
-                            spacePhoto.setSelected(1);
+                            foto.setSelected(1);
                         } else {
                             imagem.setPadding(0, 0, 0, 0);
                             imgCheck.setVisibility(View.INVISIBLE);
-                            spacePhoto.setSelected(0);
+                            foto.setSelected(0);
 
                             boolean encontrou = false;
-                            for (SpacePhoto spacePhoto1 : mSpacePhotos) {
+                            for (Foto foto1 : mFotos) {
 
-                                if (spacePhoto1.getSelected() == 1) {
+                                if (foto1.getSelected() == 1) {
                                     encontrou = true;
                                     break;
                                 }
@@ -612,7 +604,7 @@ compartilharImagem();
                             if (!encontrou) {
 
                                 modoSelecao = false;
-                                GlideActivity.this.invalidateOptionsMenu();
+                                GaleriaActivity.this.invalidateOptionsMenu();
 
                             }
 
@@ -622,8 +614,8 @@ compartilharImagem();
                     } else {
 
 
-                        Intent intent = new Intent(mContext, SpacePhotoActivity.class);
-                        intent.putExtra(SpacePhotoActivity.EXTRA_SPACE_PHOTO, spacePhoto);
+                        Intent intent = new Intent(mContext, FotoActivity.class);
+                        intent.putExtra(FotoActivity.EXTRA_SPACE_PHOTO, foto);
                         startActivity(intent);
 
 
@@ -637,12 +629,12 @@ compartilharImagem();
 
 
                 if (position != RecyclerView.NO_POSITION) {
-                    SpacePhoto spacePhoto = mSpacePhotos.get(position);
+                    Foto foto = mFotos.get(position);
 
 
                     ImageView imagem = (ImageView) view.findViewById(R.id.iv_photo);
                     ImageView imgCheck = (ImageView) view.findViewById(R.id.imgCheck);
-                    spacePhoto.setSelected(1);
+                    foto.setSelected(1);
 
                     imagem.setPadding(30, 30, 30, 30);
 
@@ -651,7 +643,7 @@ compartilharImagem();
 
                     modoSelecao = true;
 
-                    GlideActivity.this.invalidateOptionsMenu();
+                    GaleriaActivity.this.invalidateOptionsMenu();
                 }
 
                 return true;
@@ -660,9 +652,9 @@ compartilharImagem();
 
         }
 
-        public ImageGalleryAdapter(Context context, List<SpacePhoto> spacePhotos) {
+        public ImageGalleryAdapter(Context context, List<Foto> fotos) {
             mContext = context;
-            mSpacePhotos = spacePhotos;
+            mFotos = fotos;
 
         }
     }
@@ -674,9 +666,9 @@ compartilharImagem();
 
             try {
                 String filename = queryName(getContentResolver(), selectedImage);
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(GlideActivity.this.getContentResolver(), selectedImage);
-                ImageSaver imageSaver = new ImageSaver(GlideActivity.this);
-                ImageDAO imageDAO = new ImageDAO(GlideActivity.this);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(GaleriaActivity.this.getContentResolver(), selectedImage);
+                ImageSaver imageSaver = new ImageSaver(GaleriaActivity.this);
+                ImageDAO imageDAO = new ImageDAO(GaleriaActivity.this);
                 imageSaver.save(bitmap, filename);
                 imageDAO.insereDado(filename, pastaSelecionada.getNomePasta());
                 return true;
@@ -691,9 +683,9 @@ compartilharImagem();
             if (result) {
                 ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.GONE);
                 listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
-                mSpacePhotos = SpacePhoto.getSpacePhotos(listaImagens);
+                mFotos = Foto.getSpacePhotos(listaImagens);
 
-                ImageGalleryAdapter adapter = new ImageGalleryAdapter(GlideActivity.this, SpacePhoto.getSpacePhotos(listaImagens));
+                ImageGalleryAdapter adapter = new ImageGalleryAdapter(GaleriaActivity.this, Foto.getSpacePhotos(listaImagens));
                 recyclerView.setAdapter(adapter);
 
             } else {
@@ -714,11 +706,11 @@ compartilharImagem();
 
                 try {
                     String filename = queryName(getContentResolver(), uri);
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(GlideActivity.this.getContentResolver(), uri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(GaleriaActivity.this.getContentResolver(), uri);
 
 
-                    ImageSaver imageSaver = new ImageSaver(GlideActivity.this);
-                    ImageDAO imageDAO = new ImageDAO(GlideActivity.this);
+                    ImageSaver imageSaver = new ImageSaver(GaleriaActivity.this);
+                    ImageDAO imageDAO = new ImageDAO(GaleriaActivity.this);
                     imageSaver.save(bitmap, filename);
                     imageDAO.insereDado(filename, pastaSelecionada.getNomePasta());
 
@@ -740,10 +732,10 @@ compartilharImagem();
             listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
 
             views = new ArrayList<>();
-            ImageGalleryAdapter adapter = new ImageGalleryAdapter(GlideActivity.this, SpacePhoto.getSpacePhotos(listaImagens));
+            ImageGalleryAdapter adapter = new ImageGalleryAdapter(GaleriaActivity.this, Foto.getSpacePhotos(listaImagens));
 
 
-            mSpacePhotos = SpacePhoto.getSpacePhotos(listaImagens);
+            mFotos = Foto.getSpacePhotos(listaImagens);
             recyclerView.setAdapter(adapter);
 
             spinner.setVisibility(View.GONE);

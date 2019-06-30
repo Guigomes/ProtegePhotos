@@ -1,4 +1,4 @@
-package ggsoftware.com.br.protegephotospro;
+package ggsoftware.com.br.protegephotospro.activitys;
 
 import android.content.Intent;
 import android.text.TextUtils;
@@ -8,15 +8,15 @@ import java.util.List;
 
 import ggsoftware.com.br.protegephotospro.dao.PastaDAO;
 import ggsoftware.com.br.protegephotospro.dao.PastaVO;
-import me.zhanghai.android.patternlock.ConfirmPatternActivity;
-import me.zhanghai.android.patternlock.PatternUtils;
-import me.zhanghai.android.patternlock.PatternView;
+import ggsoftware.com.br.protegephotospro.components.pattern.ConfirmPatternActivity;
+import ggsoftware.com.br.protegephotospro.components.pattern.PatternUtils;
+import ggsoftware.com.br.protegephotospro.components.pattern.PatternView;
 
 /**
  * Created by gomes on 31/07/17.
  */
 
-public class SampleConfirmPatternActivity extends ConfirmPatternActivity {
+public class ConfirmarPadraoActivity extends ConfirmPatternActivity {
 
     PastaDAO pastaDAO;
 
@@ -30,7 +30,7 @@ public class SampleConfirmPatternActivity extends ConfirmPatternActivity {
     protected boolean isPatternCorrect(List<PatternView.Cell> pattern) {
         String padrao = PatternUtils.patternToSha1String(pattern);
 
-        pastaDAO = new PastaDAO(SampleConfirmPatternActivity.this);
+        pastaDAO = new PastaDAO(ConfirmarPadraoActivity.this);
         if (true) {
             List<PastaVO> pastasVisiveis = pastaDAO.listarPastas(false);
             List<PastaVO> pastas = pastaDAO.listarPastas(true);
@@ -44,20 +44,20 @@ public class SampleConfirmPatternActivity extends ConfirmPatternActivity {
                 if (padrao.equals(pasta.getSenhaPasta())) {
                     contPastasMesmasSenha++;
                     pastasMesmaSenha.add(pasta);
-                    SampleConfirmPatternActivity.pastaVO = pasta;
+                    ConfirmarPadraoActivity.pastaVO = pasta;
 
                 }
 
             }
             if (contPastasMesmasSenha >= 2) {
-                Intent it = new Intent(SampleConfirmPatternActivity.this, EscolherPastaActivity.class);
+                Intent it = new Intent(ConfirmarPadraoActivity.this, EscolherPastaActivity.class);
                 it.putExtra("isEmpate", true);
                 it.putExtra("padrao", padrao);
                 startActivity(it);
                 return true;
             } else {
                 if (contPastasMesmasSenha == 1) {
-                    Intent it = new Intent(SampleConfirmPatternActivity.this, GlideActivity.class);
+                    Intent it = new Intent(ConfirmarPadraoActivity.this, GaleriaActivity.class);
                     startActivity(it);
                     return true;
                 } else {
@@ -68,7 +68,7 @@ public class SampleConfirmPatternActivity extends ConfirmPatternActivity {
         } else {
             String patternSha1 = ConfirmPatternActivity.pastaVO.getSenhaPasta();
             if (TextUtils.equals(PatternUtils.patternToSha1String(pattern), patternSha1)) {
-                Intent it = new Intent(SampleConfirmPatternActivity.this, GlideActivity.class);
+                Intent it = new Intent(ConfirmarPadraoActivity.this, GaleriaActivity.class);
 
                 finish();
 

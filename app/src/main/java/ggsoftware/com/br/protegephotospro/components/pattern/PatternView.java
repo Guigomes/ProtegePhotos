@@ -8,7 +8,7 @@
  * adapted by Zhang Hai.
  */
 
-package me.zhanghai.android.patternlock;
+package ggsoftware.com.br.protegephotospro.components.pattern;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

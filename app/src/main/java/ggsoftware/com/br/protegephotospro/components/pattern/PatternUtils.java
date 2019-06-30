@@ -8,7 +8,7 @@
  * 2cb687e7b9d0cbb1af5ba753453a9a05350a100e.
  */
 
-package me.zhanghai.android.patternlock;
+package ggsoftware.com.br.protegephotospro.components.pattern;
 
 import android.util.Base64;
 

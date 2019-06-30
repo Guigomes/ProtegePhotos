@@ -3,7 +3,7 @@
  * All Rights Reserved.
  */
 
-package me.zhanghai.android.patternlock;
+package ggsoftware.com.br.protegephotospro.components.pattern;
 
 import android.os.Bundle;
 import android.view.View;
@@ -20,13 +20,6 @@ import ggsoftware.com.br.protegephotospro.R;
  */
 public class SetPatternActivity extends BasePatternActivity
         implements PatternView.OnPatternListener {
-
-
-    public static String nomePasta;
-    public static int idPasta;
-    public static boolean isPastaVisivel;
-    public static Boolean isAlterarSenha;
-
 
     private enum LeftButtonState {
 
@@ -119,11 +112,11 @@ public class SetPatternActivity extends BasePatternActivity
             }
         });
 
-        idPasta = (int) getIntent().getExtras().get("idPasta");
-        nomePasta = (String) getIntent().getExtras().get("nomePasta");
-        isAlterarSenha = (Boolean) getIntent().getExtras().get("isAlterarSenha");
+        int idPasta = getIdPasta();
+        String nomePasta = getNomePasta();
+        boolean isAlterarSenha = isAlterarSenha();
 
-        if(isAlterarSenha != null && isAlterarSenha == true){
+        if(isAlterarSenha){
             setTitle("Alterar Senha da pasta");
         }
 
@@ -246,15 +239,12 @@ public class SetPatternActivity extends BasePatternActivity
         if (mStage == Stage.DrawTooShort) {
             mMessageText.setText(getString(mStage.messageId, mMinPatternSize));
         } else if (mStage == Stage.Draw) {
-            if(isAlterarSenha != null && isAlterarSenha){
+            if(isAlterarSenha()){
 
-                String mensagem = getString(R.string.msg_padrao_alterar, nomePasta);
+                String mensagem =  getString(R.string.msg_padrao_alterar, getNomePasta());
                 mMessageText.setText(mensagem);
             }else {
-                if (idPasta == 0) {
-                    nomePasta = getString(R.string.txt_pasta_principal);
-                }
-                String mensagem = getString(mStage.messageId, nomePasta);
+                String mensagem = getString(mStage.messageId, getNomePasta());
                 mMessageText.setText(mensagem);
             }
         } else {
@@ -304,4 +294,7 @@ public class SetPatternActivity extends BasePatternActivity
 
     protected void onSetPattern(List<PatternView.Cell> pattern) {
     }
+
+
+
 }

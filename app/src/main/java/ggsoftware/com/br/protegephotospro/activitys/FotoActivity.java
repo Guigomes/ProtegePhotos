@@ -1,4 +1,4 @@
-package ggsoftware.com.br.protegephotospro;
+package ggsoftware.com.br.protegephotospro.activitys;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -6,31 +6,32 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import ggsoftware.com.br.protegephotospro.utils.ImageSaver;
+import ggsoftware.com.br.protegephotospro.R;
+import ggsoftware.com.br.protegephotospro.entidades.Foto;
 
-public class SpacePhotoActivity extends AppCompatActivity {
+public class FotoActivity extends AppCompatActivity {
 
-    public static final String EXTRA_SPACE_PHOTO = "SpacePhotoActivity.SPACE_PHOTO";
+    public static final String EXTRA_SPACE_PHOTO = "FotoActivity.SPACE_PHOTO";
     private PhotoView mImageView;
 
-    SpacePhoto spacePhoto;
+    Foto foto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_space_photo);
 
         mImageView = (PhotoView) findViewById(R.id.image);
-         spacePhoto = getIntent().getParcelableExtra(EXTRA_SPACE_PHOTO);
+         foto = getIntent().getParcelableExtra(EXTRA_SPACE_PHOTO);
 
-        ImageSaver imageSaver = new ImageSaver(SpacePhotoActivity.this);
-        File file = imageSaver.loadFile(spacePhoto.getTitle());
+        ImageSaver imageSaver = new ImageSaver(FotoActivity.this);
+        File file = imageSaver.loadFile(foto.getTitle());
 
 
         Glide.with(this)
@@ -42,16 +43,16 @@ public class SpacePhotoActivity extends AppCompatActivity {
     }
 
     public void nextFoto(View v){
-        List<SpacePhoto> fotos = SpacePhoto.getFotos();
+        List<Foto> fotos = Foto.getFotos();
         for(int i = 0;i< fotos.size(); i++){
-    if(fotos.get(i).getId() == spacePhoto.getId()){
+    if(fotos.get(i).getId() == foto.getId()){
         if(i < fotos.size() -1){
-            spacePhoto = fotos.get(i+1);
+            foto = fotos.get(i+1);
         }else{
-            spacePhoto = fotos.get(0);
+            foto = fotos.get(0);
         }
-        ImageSaver imageSaver = new ImageSaver(SpacePhotoActivity.this);
-        File file = imageSaver.loadFile(spacePhoto.getTitle());
+        ImageSaver imageSaver = new ImageSaver(FotoActivity.this);
+        File file = imageSaver.loadFile(foto.getTitle());
 
 
         Glide.with(this)

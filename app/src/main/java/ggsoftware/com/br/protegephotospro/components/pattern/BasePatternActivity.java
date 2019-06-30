@@ -3,7 +3,7 @@
  * All Rights Reserved.
  */
 
-package me.zhanghai.android.patternlock;
+package ggsoftware.com.br.protegephotospro.components.pattern;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +23,12 @@ public class BasePatternActivity extends AppCompatActivity {
     protected Button mLeftButton;
     protected Button mRightButton;
 
+    private   String nomePasta;
+    private int idPasta;
+    private boolean isPastaVisivel;
+
+    private boolean isAlterarSenha;
+
     private final Runnable clearPatternRunnable = new Runnable() {
         public void run() {
             // clearPattern() resets display mode to DisplayMode.Correct.
@@ -40,6 +46,15 @@ public class BasePatternActivity extends AppCompatActivity {
         mButtonContainer = (LinearLayout) findViewById(R.id.pl_button_container);
         mLeftButton = (Button) findViewById(R.id.pl_left_button);
         mRightButton = (Button) findViewById(R.id.pl_right_button);
+
+        Bundle extras = getIntent().getExtras();
+
+        this.idPasta = (int) extras.get("idPasta");
+        this.nomePasta = (String) extras.get("nomePasta");
+        this.isPastaVisivel = (boolean) extras.get("isPastaVisivel");
+        this.isAlterarSenha = (boolean) extras.get("isAlterarSenha");
+
+
     }
 
     protected void removeClearPatternRunnable() {
@@ -49,5 +64,37 @@ public class BasePatternActivity extends AppCompatActivity {
     protected void postClearPatternRunnable() {
         removeClearPatternRunnable();
         mPatternView.postDelayed(clearPatternRunnable, CLEAR_PATTERN_DELAY_MILLI);
+    }
+
+    public String getNomePasta() {
+        return nomePasta;
+    }
+
+    public void setNomePasta(String nomePasta) {
+        this.nomePasta = nomePasta;
+    }
+
+    public int getIdPasta() {
+        return idPasta;
+    }
+
+    public void setIdPasta(int idPasta) {
+        this.idPasta = idPasta;
+    }
+
+    public boolean isPastaVisivel() {
+        return isPastaVisivel;
+    }
+
+    public void setPastaVisivel(boolean pastaVisivel) {
+        isPastaVisivel = pastaVisivel;
+    }
+
+    public boolean isAlterarSenha() {
+        return isAlterarSenha;
+    }
+
+    public void setAlterarSenha(boolean alterarSenha) {
+        isAlterarSenha = alterarSenha;
     }
 }

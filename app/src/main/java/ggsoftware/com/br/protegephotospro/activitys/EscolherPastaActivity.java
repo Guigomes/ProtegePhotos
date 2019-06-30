@@ -1,4 +1,4 @@
-package ggsoftware.com.br.protegephotospro;
+package ggsoftware.com.br.protegephotospro.activitys;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,9 +21,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import ggsoftware.com.br.protegephotospro.R;
 import ggsoftware.com.br.protegephotospro.dao.PastaDAO;
 import ggsoftware.com.br.protegephotospro.dao.PastaVO;
-import me.zhanghai.android.patternlock.ConfirmPatternActivity;
+import ggsoftware.com.br.protegephotospro.components.pattern.ConfirmPatternActivity;
 
 public class EscolherPastaActivity extends AppCompatActivity {
 
@@ -71,13 +72,13 @@ public class EscolherPastaActivity extends AppCompatActivity {
 
 
                                 if (m_Text != null && !m_Text.isEmpty()) {
-                                    Intent it = new Intent(EscolherPastaActivity.this, SampleSetPatternActivity.class);
+                                    Intent it = new Intent(EscolherPastaActivity.this, EscolherPadraoActivity.class);
 
                                     it.putExtra("idPasta", -1);
                                     it.putExtra("nomePasta", m_Text);
-                                    it.putExtra("isPastaVisivel", SampleSetPatternActivity.isPastaVisivel);
+                                    it.putExtra("isPastaVisivel", EscolherPadraoActivity.isPastaVisivel);
 
-                                    Toast.makeText(EscolherPastaActivity.this, SampleSetPatternActivity.isPastaVisivel + "", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(EscolherPastaActivity.this, EscolherPadraoActivity.isPastaVisivel + "", Toast.LENGTH_SHORT).show();
                                     startActivityForResult(it, MainActivity.CRIAR_NOVA_SENHA);
                                 } else {
                                     Toast.makeText(EscolherPastaActivity.this, R.string.msg_erro_criar_pasta_sem_nome, Toast.LENGTH_SHORT).show();
@@ -127,7 +128,7 @@ public class EscolherPastaActivity extends AppCompatActivity {
                         }
 
                     }
-                    Intent it = new Intent(EscolherPastaActivity.this, GlideActivity.class);
+                    Intent it = new Intent(EscolherPastaActivity.this, GaleriaActivity.class);
                     it.putExtra("nomePasta", nomePastaEscolhida);
                     startActivityForResult(it, MainActivity.CONFERIR_SENHA);
 
@@ -148,7 +149,7 @@ public class EscolherPastaActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String nomePastaEscolhida = nomePastas.get(position);
 
-                    Intent it = new Intent(EscolherPastaActivity.this, SampleConfirmPatternActivity.class);
+                    Intent it = new Intent(EscolherPastaActivity.this, ConfirmarPadraoActivity.class);
                     it.putExtra("nomePasta", nomePastaEscolhida);
                     startActivityForResult(it, MainActivity.CONFERIR_SENHA);
 
@@ -178,12 +179,12 @@ public class EscolherPastaActivity extends AppCompatActivity {
             if (pastaVO == null) {
 
 
-                boolean sucesso = pastaDAO.salvarPasta(nomePasta, pattern, SampleSetPatternActivity.isPastaVisivel);
+                boolean sucesso = pastaDAO.salvarPasta(nomePasta, pattern, EscolherPadraoActivity.isPastaVisivel);
 
 
                 if (sucesso) {
                     Toast.makeText(EscolherPastaActivity.this, getString(R.string.msg_sucesso_criar_pasta), Toast.LENGTH_SHORT).show();
-                    Intent it = new Intent(EscolherPastaActivity.this, GlideActivity.class);
+                    Intent it = new Intent(EscolherPastaActivity.this, GaleriaActivity.class);
                     it.putExtra("nomePasta", nomePasta);
                     finish();
 
@@ -202,7 +203,7 @@ public class EscolherPastaActivity extends AppCompatActivity {
         } else if (resultCode == RESULT_OK && requestCode == MainActivity.CONFERIR_SENHA) {
 
 
-            Intent it = new Intent(EscolherPastaActivity.this, GlideActivity.class);
+            Intent it = new Intent(EscolherPastaActivity.this, GaleriaActivity.class);
 //            finish();
 
 
@@ -248,7 +249,7 @@ public class EscolherPastaActivity extends AppCompatActivity {
             pastaDAO.updatePasta(pasta);
         }
 
-        Intent it = new Intent(EscolherPastaActivity.this, SampleConfirmPatternActivity.class);
+        Intent it = new Intent(EscolherPastaActivity.this, ConfirmarPadraoActivity.class);
         it.putExtra("isModoInvisivel", true);
         finish();
         startActivity(it);
@@ -262,12 +263,12 @@ public class EscolherPastaActivity extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.rdb_visivel:
                 if (checked)
-                    SampleSetPatternActivity.isPastaVisivel = true;
+                    EscolherPadraoActivity.isPastaVisivel = true;
 
                     break;
             case R.id.rdb_invisivel:
                 if (checked)
-                    SampleSetPatternActivity.isPastaVisivel = false;
+                    EscolherPadraoActivity.isPastaVisivel = false;
 
                     break;
         }

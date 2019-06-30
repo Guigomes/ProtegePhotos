@@ -1,4 +1,4 @@
-package ggsoftware.com.br.protegephotospro;
+package ggsoftware.com.br.protegephotospro.activitys;
 
 import android.os.Bundle;
 
@@ -9,6 +9,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import ggsoftware.com.br.protegephotospro.R;
 
 public class CriarPastaActivity extends AppCompatActivity {
 

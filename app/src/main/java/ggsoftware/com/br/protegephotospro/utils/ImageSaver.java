@@ -1,4 +1,4 @@
-package ggsoftware.com.br.protegephotospro;
+package ggsoftware.com.br.protegephotospro.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;

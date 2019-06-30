@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ProtegePhotosPRO.iml" filepath="$PROJECT_DIR$/ProtegePhotosPRO.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ProtegePhotos.iml" filepath="$PROJECT_DIR$/ProtegePhotos.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

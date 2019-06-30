@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ggsoftware.com.br.protegephotospro.CriarPastaActivity"
+    tools:context="ggsoftware.com.br.protegephotospro.activitys.CriarPastaActivity"
     tools:showIn="@layout/activity_criar_pasta">
 
 

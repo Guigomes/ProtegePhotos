@@ -1,4 +1,4 @@
-package ggsoftware.com.br.protegephotospro;
+package ggsoftware.com.br.protegephotospro.entidades;
 
 /**
  * Created by f3861879 on 02/10/2017.
@@ -12,7 +12,7 @@ import java.util.List;
 
 import ggsoftware.com.br.protegephotospro.dao.ImagemVO;
 
-public class SpacePhoto implements Parcelable {
+public class Foto implements Parcelable {
 
     private String mUrl;
     private String mTitle;
@@ -22,9 +22,9 @@ public class SpacePhoto implements Parcelable {
 
     private String filepath;
 
-    private static List<SpacePhoto> fotos;
+    private static List<Foto> fotos;
 
-    public static List<SpacePhoto>  getFotos(){
+    public static List<Foto>  getFotos(){
 
         return fotos;
     }
@@ -35,28 +35,28 @@ public class SpacePhoto implements Parcelable {
     }
 
 
-    public SpacePhoto(String url, String title, int id) {
+    public Foto(String url, String title, int id) {
         mUrl = url;
         this.id = id;
         mTitle = title;
     }
 
-    protected SpacePhoto(Parcel in) {
+    protected Foto(Parcel in) {
         mUrl = in.readString();
         mTitle = in.readString();
         id  = in.readInt();
         filepath = in.readString();
     }
 
-    public static final Creator<SpacePhoto> CREATOR = new Creator<SpacePhoto>() {
+    public static final Creator<Foto> CREATOR = new Creator<Foto>() {
         @Override
-        public SpacePhoto createFromParcel(Parcel in) {
-            return new SpacePhoto(in);
+        public Foto createFromParcel(Parcel in) {
+            return new Foto(in);
         }
 
         @Override
-        public SpacePhoto[] newArray(int size) {
-            return new SpacePhoto[size];
+        public Foto[] newArray(int size) {
+            return new Foto[size];
         }
     };
 
@@ -76,13 +76,13 @@ public class SpacePhoto implements Parcelable {
         mTitle = title;
     }
 
-    public static  List<SpacePhoto> getSpacePhotos(  List<ImagemVO> imagens) {
+    public static  List<Foto> getSpacePhotos(List<ImagemVO> imagens) {
 
 
-        List<SpacePhoto> photos = new ArrayList<>();
+        List<Foto> photos = new ArrayList<>();
         int i = 0;
         for(ImagemVO imagemVO : imagens){
-            photos.add(new SpacePhoto(imagemVO.getDiretorio(), imagemVO.getNome(), imagemVO.getId()));
+            photos.add(new Foto(imagemVO.getDiretorio(), imagemVO.getNome(), imagemVO.getId()));
 
         }
         fotos = photos;
