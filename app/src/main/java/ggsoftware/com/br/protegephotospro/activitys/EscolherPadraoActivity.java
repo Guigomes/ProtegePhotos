@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import ggsoftware.com.br.protegephotospro.Constantes;
 import ggsoftware.com.br.protegephotospro.R;
 import ggsoftware.com.br.protegephotospro.components.pattern.PatternUtils;
 import ggsoftware.com.br.protegephotospro.components.pattern.PatternView;
@@ -24,16 +25,13 @@ public class EscolherPadraoActivity extends SetPatternActivity {
     protected void onSetPattern(List<PatternView.Cell> pattern) {
         String patternSha1 = PatternUtils.patternToSha1String(pattern);
 
-        Bundle extras = getIntent().getExtras();
-
-
-        if (getIdPasta() == 0) {
-            criarNovaPasta(patternSha1);
+        if (getIdPasta() > 0) {
+            alterarSenhaPasta(patternSha1);
         }else{
+            criarNovaPasta(patternSha1);
+
 
         }
-
-
     }
 
     private void criarNovaPasta(String pattern) {
@@ -53,9 +51,9 @@ public class EscolherPadraoActivity extends SetPatternActivity {
 
             Intent it = new Intent(EscolherPadraoActivity.this, GaleriaActivity.class);
             it.putExtra("nomePasta", nomePasta);
-
             finish();
             startActivity(it);
+
 
         } else {
             Toast.makeText(EscolherPadraoActivity.this, getString(R.string.msg_erro_criar_pasta), Toast.LENGTH_SHORT).show();
@@ -63,8 +61,12 @@ public class EscolherPadraoActivity extends SetPatternActivity {
 
 
     }
-    private void alterarSenhaPasta(int idPasta, String pattern, String nomePasta) {
-
+    private void alterarSenhaPasta( String pattern) {
+        Intent it = new Intent(EscolherPadraoActivity.this, GaleriaActivity.class);
+        it.putExtra("nomePasta", getNomePasta());
+        it.putExtra("pattern", pattern);
+        setResult(RESULT_OK);
+        finishActivity( Constantes.ALTERAR_SENHA);
 
     }
 }

@@ -6,7 +6,9 @@
 package ggsoftware.com.br.protegephotospro.components.pattern;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,7 +25,7 @@ public class BasePatternActivity extends AppCompatActivity {
     protected Button mLeftButton;
     protected Button mRightButton;
 
-    private   String nomePasta;
+    private String nomePasta;
     private int idPasta;
     private boolean isPastaVisivel;
 
@@ -48,12 +50,16 @@ public class BasePatternActivity extends AppCompatActivity {
         mRightButton = (Button) findViewById(R.id.pl_right_button);
 
         Bundle extras = getIntent().getExtras();
+        if (extras != null) {
 
-        this.idPasta = (int) extras.get("idPasta");
-        this.nomePasta = (String) extras.get("nomePasta");
-        this.isPastaVisivel = (boolean) extras.get("isPastaVisivel");
-        this.isAlterarSenha = (boolean) extras.get("isAlterarSenha");
-
+            this.idPasta = extras.getInt("idPasta");
+            this.nomePasta =  extras.getString("nomePasta");
+            this.isPastaVisivel =  extras.getBoolean("isPastaVisivel");
+            this.isAlterarSenha = extras.getBoolean("isAlterarSenha");
+        }else{
+            this.nomePasta = getString(R.string.txt_pasta_principal);
+            this.isPastaVisivel = true;
+        }
 
     }
 

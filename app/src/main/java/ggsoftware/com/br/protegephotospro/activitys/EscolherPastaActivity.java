@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,82 +30,72 @@ import ggsoftware.com.br.protegephotospro.components.pattern.ConfirmPatternActiv
 
 public class EscolherPastaActivity extends AppCompatActivity {
 
-    private String m_Text;
+    private String nomePasta;
 
     PastaDAO pastaDAO;
+    boolean isPastaVisivel;
 
-    @Override
-    public void onBackPressed() {
+    View.OnClickListener fabListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final AlertDialog dialog;
+
+            final View alertDialogView = LayoutInflater.from(EscolherPastaActivity.this).inflate
+                    (R.layout.dialog_nova_pasta, null);
+            final View titleView = LayoutInflater.from(EscolherPastaActivity.this).inflate(R.layout.dialog_nova_pasta_title, null);
+
+            dialog = new AlertDialog.Builder(EscolherPastaActivity.this)
+                    .setView(alertDialogView)
+                    .setCustomTitle(titleView)
+                    .setPositiveButton(R.string.btn_criar_pasta, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            nomePasta = ((EditText) alertDialogView.findViewById(R.id.edtNomeNovaPasta)).getText().toString();
 
 
-        finish();
-    }
+                            if (nomePasta != null && !nomePasta.isEmpty()) {
+                                Intent it = new Intent(EscolherPastaActivity.this, EscolherPadraoActivity.class);
+
+                                it.putExtra("idPasta", -1);
+                                it.putExtra("nomePasta", nomePasta);
+                                it.putExtra("isPastaVisivel", isPastaVisivel);
+
+
+                                startActivity(it);
+                            } else {
+                                Toast.makeText(EscolherPastaActivity.this, R.string.msg_erro_criar_pasta_sem_nome, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .setCancelable(true)
+                    .create();
+            dialog.show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_escolher_pasta);
-        final List<String> nomePastas;
+        final List<String> nomePastas = new ArrayList();
 
 
-        Toast.makeText(getApplicationContext(), "onCreate ESCOLHER CHAMADO", Toast.LENGTH_SHORT).show();
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                final AlertDialog dialog;
-
-                final View alertDialogView = LayoutInflater.from(EscolherPastaActivity.this).inflate
-                        (R.layout.dialog_nova_pasta, null);
-                final View titleView = LayoutInflater.from(EscolherPastaActivity.this).inflate(R.layout.dialog_nova_pasta_title, null);
-
-                dialog = new AlertDialog.Builder(EscolherPastaActivity.this)
-                        .setView(alertDialogView)
-                        .setCustomTitle(titleView)
-                        .setPositiveButton(R.string.btn_criar_pasta, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                m_Text = ((EditText) alertDialogView.findViewById(R.id.edtNomeNovaPasta)).getText().toString();
-
-
-
-                                if (m_Text != null && !m_Text.isEmpty()) {
-                                    Intent it = new Intent(EscolherPastaActivity.this, EscolherPadraoActivity.class);
-
-                                    it.putExtra("idPasta", -1);
-                                    it.putExtra("nomePasta", m_Text);
-                                    it.putExtra("isPastaVisivel", EscolherPadraoActivity.isPastaVisivel);
-
-                                    Toast.makeText(EscolherPastaActivity.this, EscolherPadraoActivity.isPastaVisivel + "", Toast.LENGTH_SHORT).show();
-                                    startActivityForResult(it, MainActivity.CRIAR_NOVA_SENHA);
-                                } else {
-                                    Toast.makeText(EscolherPastaActivity.this, R.string.msg_erro_criar_pasta_sem_nome, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        })
-                        .setCancelable(true)
-                        .create();
-                dialog.show();
-            }
-        });
+        fab.setOnClickListener(fabListener);
 
         pastaDAO = new PastaDAO(EscolherPastaActivity.this);
 
         Intent it = getIntent();
         ListView listaPastas = (ListView) findViewById(R.id.lista_pastas);
-        nomePastas = new ArrayList();
 
         if (it.getExtras() != null && it.getExtras().get("isEmpate") != null) {
 
             setTitle(getString(R.string.msg_pastas_iguais));
-            List<PastaVO> pastasVisiveis = pastaDAO.listarPastas(false);
-            final List<PastaVO> pastas = pastaDAO.listarPastas(true);
+            List<PastaVO> pastas = pastaDAO.listarPastas();
 
-            pastas.addAll(pastasVisiveis);
 
             String padrao = (String) it.getExtras().get("padrao");
             for (PastaVO pasta :
@@ -121,16 +113,10 @@ public class EscolherPastaActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String nomePastaEscolhida = nomePastas.get(position);
-                    for (PastaVO pasta : pastas) {
-                        if (pasta.getNomePasta().equals(nomePastaEscolhida)) {
-                            ConfirmPatternActivity.pastaVO = pasta;
 
-                        }
-
-                    }
                     Intent it = new Intent(EscolherPastaActivity.this, GaleriaActivity.class);
                     it.putExtra("nomePasta", nomePastaEscolhida);
-                    startActivityForResult(it, MainActivity.CONFERIR_SENHA);
+                    startActivity(it);
 
                 }
             });
@@ -151,7 +137,7 @@ public class EscolherPastaActivity extends AppCompatActivity {
 
                     Intent it = new Intent(EscolherPastaActivity.this, ConfirmarPadraoActivity.class);
                     it.putExtra("nomePasta", nomePastaEscolhida);
-                    startActivityForResult(it, MainActivity.CONFERIR_SENHA);
+                    startActivity(it);
 
                 }
             });
@@ -165,76 +151,16 @@ public class EscolherPastaActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (resultCode == RESULT_OK && requestCode == MainActivity.CRIAR_NOVA_SENHA) {
-
-            String nomePasta = (String) data.getExtras().get("nomePasta");
-            String pattern = (String) data.getExtras().get("pattern");
-
-
-            PastaDAO pastaDAO = new PastaDAO(EscolherPastaActivity.this);
-            PastaVO pastaVO = pastaDAO.buscarPorNome(nomePasta);
-            if (pastaVO == null) {
-
-
-                boolean sucesso = pastaDAO.salvarPasta(nomePasta, pattern, EscolherPadraoActivity.isPastaVisivel);
-
-
-                if (sucesso) {
-                    Toast.makeText(EscolherPastaActivity.this, getString(R.string.msg_sucesso_criar_pasta), Toast.LENGTH_SHORT).show();
-                    Intent it = new Intent(EscolherPastaActivity.this, GaleriaActivity.class);
-                    it.putExtra("nomePasta", nomePasta);
-                    finish();
-
-                    startActivity(it);
-
-
-                } else {
-                    Toast.makeText(EscolherPastaActivity.this, getString(R.string.msg_erro_criar_pasta), Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(EscolherPastaActivity.this, getString(R.string.msg_pasta_repetida), Toast.LENGTH_SHORT).show();
-
-            }
-
-
-        } else if (resultCode == RESULT_OK && requestCode == MainActivity.CONFERIR_SENHA) {
-
-
-            Intent it = new Intent(EscolherPastaActivity.this, GaleriaActivity.class);
-//            finish();
-
-
-            startActivity(it);
-
-
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        /*if (!MainActivity.isModoMisto() && !MainActivity.isModoInvisivel()) {
-            getMenuInflater().inflate(R.menu.menu_pasta, menu);
-        }*/
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-/*
-        switch (item.getItemId()) {
-            case R.id.action_ativar_modo_invisivel:
-                ativarModoInvisivel();
 
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }*/
         return super.onOptionsItemSelected(item);
 
     }
@@ -260,17 +186,17 @@ public class EscolherPastaActivity extends AppCompatActivity {
         boolean checked = ((RadioButton) view).isChecked();
 
         // Check which radio button was clicked
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.rdb_visivel:
                 if (checked)
-                    EscolherPadraoActivity.isPastaVisivel = true;
+                    isPastaVisivel = true;
 
-                    break;
+                break;
             case R.id.rdb_invisivel:
                 if (checked)
-                    EscolherPadraoActivity.isPastaVisivel = false;
+                    isPastaVisivel = false;
 
-                    break;
+                break;
         }
     }
 

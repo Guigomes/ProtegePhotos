@@ -41,6 +41,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import ggsoftware.com.br.protegephotospro.Constantes;
 import ggsoftware.com.br.protegephotospro.utils.ImageSaver;
 import ggsoftware.com.br.protegephotospro.R;
 import ggsoftware.com.br.protegephotospro.entidades.Foto;
@@ -49,6 +50,8 @@ import ggsoftware.com.br.protegephotospro.dao.ImagemVO;
 import ggsoftware.com.br.protegephotospro.dao.PastaDAO;
 import ggsoftware.com.br.protegephotospro.dao.PastaVO;
 import ggsoftware.com.br.protegephotospro.components.pattern.ConfirmPatternActivity;
+
+import static ggsoftware.com.br.protegephotospro.Constantes.*;
 
 public class GaleriaActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -67,43 +70,31 @@ public class GaleriaActivity extends AppCompatActivity {
 
     PastaDAO pastaDAO;
 
-    @Override
-    public void onBackPressed() {
-        //  super.onBackPressed();
-
-        setResult(123, new Intent());
-        finish();//finishing activity
-        // finish();
-
-        //  Intent it = new Intent(GaleriaActivity.this, EscolherPastaActivity.class);
-//        startActivity(it);
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_glide);
-
-        Toast.makeText(getApplicationContext(), "OnCreate CHAMADO", Toast.LENGTH_LONG).show();
-
-        List<Foto> mFotos = new ArrayList<>();
         pastaDAO = new PastaDAO(GaleriaActivity.this);
-
         spinner = (ProgressBar) findViewById(R.id.progressBar1);
 
-        String nomePasta = null;
-        if (getIntent().getExtras() != null) {
+        Bundle extras = getIntent().getExtras();
 
-            nomePasta = (String) getIntent().getExtras().get("nomePasta");
+        List<Foto> mFotos = new ArrayList<>();
+
+
+        String nomePasta = null;
+        if (extras != null) {
+
+            nomePasta = (String) extras.get("nomePasta");
         }
         if (nomePasta != null) {
             pastaSelecionada = pastaDAO.buscarPorNome(nomePasta);
-            if (pastaSelecionada == null) {
-                pastaSelecionada = ConfirmPatternActivity.pastaVO;
-            }
+
         } else {
-            pastaSelecionada = ConfirmPatternActivity.pastaVO;
+
+            Toast.makeText(getApplicationContext(), "Erro aco encontrar pasta", Toast.LENGTH_LONG).show();
+
         }
 
         setTitle(pastaSelecionada.getNomePasta());
@@ -118,6 +109,7 @@ public class GaleriaActivity extends AppCompatActivity {
 
 
         listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
+
         if (listaImagens.size() == 0) {
             ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.VISIBLE);
         } else {
@@ -295,37 +287,37 @@ public class GaleriaActivity extends AppCompatActivity {
     }
 
     private void criarNovaPasta() {
-        AlertDialog.Builder builder2 = new AlertDialog.Builder(GaleriaActivity.this);
-        builder2.setTitle(getString(R.string.txt_informe_nome_pasta));
+        AlertDialog.Builder builderCriarNovaPasta = new AlertDialog.Builder(GaleriaActivity.this);
+        builderCriarNovaPasta.setTitle(getString(R.string.txt_informe_nome_pasta));
 
 
-        final EditText input2 = new EditText(GaleriaActivity.this);
+        final EditText inputNomePasta = new EditText(GaleriaActivity.this);
 
-        input2.setInputType(InputType.TYPE_CLASS_TEXT);
-        input2.setTextColor(Color.BLACK);
-        builder2.setView(input2);
+        inputNomePasta.setInputType(InputType.TYPE_CLASS_TEXT);
+        inputNomePasta.setTextColor(Color.BLACK);
+        builderCriarNovaPasta.setView(inputNomePasta);
 
-        builder2.setPositiveButton(getString(R.string.btn_criar_pasta), new DialogInterface.OnClickListener() {
+        builderCriarNovaPasta.setPositiveButton(getString(R.string.btn_criar_pasta), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String m_Text = input2.getText().toString();
+                String nomePasta = inputNomePasta.getText().toString();
 
                 Intent it = new Intent(GaleriaActivity.this, EscolherPadraoActivity.class);
 
                 it.putExtra("idPasta", -1);
-                it.putExtra("nomePasta", m_Text);
-                startActivityForResult(it, MainActivity.CRIAR_NOVA_SENHA);
+                it.putExtra("nomePasta", nomePasta);
+                startActivity(it);
             }
         });
 
-        builder2.setNegativeButton(getString(R.string.btn_cancelar), new DialogInterface.OnClickListener() {
+        builderCriarNovaPasta.setNegativeButton(getString(R.string.btn_cancelar), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
 
-        builder2.show();
+        builderCriarNovaPasta.show();
     }
 
     private void alterarSenhaPasta() {
@@ -340,7 +332,7 @@ public class GaleriaActivity extends AppCompatActivity {
         it.putExtra("nomePasta", nomePasta);
 
         it.putExtra("isAlterarSenha", true);
-        startActivityForResult(it, MainActivity.ALTERAR_SENHA);
+        startActivityForResult(it, ALTERAR_SENHA);
 
 
     }
@@ -437,67 +429,36 @@ public class GaleriaActivity extends AppCompatActivity {
                         new SalvarImagem().execute(selectedImage);
                     }
                 }
-
-        }
-        if (resultCode == RESULT_OK && requestCode == MainActivity.CRIAR_NOVA_SENHA) {
-
-            String nomePasta = (String) imageReturnedIntent.getExtras().get("nomePasta");
-            String pattern = (String) imageReturnedIntent.getExtras().get("pattern");
+                break;
+            case Constantes.ALTERAR_SENHA:
+                String nomePasta = (String) imageReturnedIntent.getExtras().get("nomePasta");
+                String pattern = (String) imageReturnedIntent.getExtras().get("pattern");
 
 
-            PastaDAO pastaDAO = new PastaDAO(GaleriaActivity.this);
-            PastaVO pastaVO = pastaDAO.buscarPorNome(nomePasta);
-            if (pastaVO == null) {
-                boolean sucesso = pastaDAO.salvarPasta(nomePasta, pattern, EscolherPadraoActivity.isPastaVisivel);
+                PastaDAO pastaDAO = new PastaDAO(GaleriaActivity.this);
+                PastaVO pastaVO = pastaDAO.buscarPorNome(nomePasta);
+                if (pastaVO != null) {
+                    pastaVO.setSenhaPasta(pattern);
+
+                    boolean sucesso = pastaDAO.updatePasta(pastaVO);
 
 
-                if (sucesso) {
-                    Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_criar_pasta), Toast.LENGTH_SHORT).show();
-                    Intent it = new Intent(GaleriaActivity.this, GaleriaActivity.class);
-                    it.putExtra("nomePasta", nomePasta);
-                    startActivity(it);
-                    finish();
+                    if (sucesso) {
+                        Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_alterar_senha), Toast.LENGTH_SHORT).show();
+                        Intent it = new Intent(GaleriaActivity.this, GaleriaActivity.class);
+                        it.putExtra("nomePasta", nomePasta);
+                        startActivity(it);
+                        finish();
 
+                    } else {
+                        Toast.makeText(GaleriaActivity.this, getString(R.string.msg_erro_criar_pasta), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(GaleriaActivity.this, getString(R.string.msg_erro_criar_pasta), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GaleriaActivity.this, getString(R.string.msg_pasta_nao_existe), Toast.LENGTH_SHORT).show();
+
                 }
-            } else {
-                Toast.makeText(GaleriaActivity.this, getString(R.string.msg_pasta_repetida), Toast.LENGTH_SHORT).show();
-
-            }
-
-
-        } else if (resultCode == RESULT_OK && requestCode == MainActivity.ALTERAR_SENHA) {
-
-            String nomePasta = (String) imageReturnedIntent.getExtras().get("nomePasta");
-            String pattern = (String) imageReturnedIntent.getExtras().get("pattern");
-
-
-            PastaDAO pastaDAO = new PastaDAO(GaleriaActivity.this);
-            PastaVO pastaVO = pastaDAO.buscarPorNome(nomePasta);
-            if (pastaVO != null) {
-                pastaVO.setSenhaPasta(pattern);
-
-                boolean sucesso = pastaDAO.updatePasta(pastaVO);
-
-
-                if (sucesso) {
-                    Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_alterar_senha), Toast.LENGTH_SHORT).show();
-                    Intent it = new Intent(GaleriaActivity.this, GaleriaActivity.class);
-                    it.putExtra("nomePasta", nomePasta);
-                    startActivity(it);
-                    finish();
-
-                } else {
-                    Toast.makeText(GaleriaActivity.this, getString(R.string.msg_erro_criar_pasta), Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(GaleriaActivity.this, getString(R.string.msg_pasta_nao_existe), Toast.LENGTH_SHORT).show();
-
-            }
-
-
         }
+
 
     }
 

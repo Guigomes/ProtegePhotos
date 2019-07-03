@@ -112,8 +112,7 @@ public class SetPatternActivity extends BasePatternActivity
             }
         });
 
-        int idPasta = getIdPasta();
-        String nomePasta = getNomePasta();
+
         boolean isAlterarSenha = isAlterarSenha();
 
         if(isAlterarSenha){

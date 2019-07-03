@@ -25,7 +25,6 @@ public class ConfirmPatternActivity extends BasePatternActivity
 
     public static final int RESULT_FORGOT_PASSWORD = RESULT_FIRST_USER;
 
-    public static PastaVO pastaVO;
 
     protected int mNumFailedAttempts;
     String nomePasta;

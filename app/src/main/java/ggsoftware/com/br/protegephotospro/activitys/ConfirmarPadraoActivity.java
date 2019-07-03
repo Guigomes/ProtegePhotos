@@ -31,11 +31,9 @@ public class ConfirmarPadraoActivity extends ConfirmPatternActivity {
         String padrao = PatternUtils.patternToSha1String(pattern);
 
         pastaDAO = new PastaDAO(ConfirmarPadraoActivity.this);
-        if (true) {
-            List<PastaVO> pastasVisiveis = pastaDAO.listarPastas(false);
-            List<PastaVO> pastas = pastaDAO.listarPastas(true);
 
-            pastas.addAll(pastasVisiveis);
+            List<PastaVO> pastas = pastaDAO.listarPastas();
+
             int contPastasMesmasSenha = 0;
             List<PastaVO> pastasMesmaSenha = new ArrayList<>();
             for (PastaVO pasta :
@@ -44,7 +42,7 @@ public class ConfirmarPadraoActivity extends ConfirmPatternActivity {
                 if (padrao.equals(pasta.getSenhaPasta())) {
                     contPastasMesmasSenha++;
                     pastasMesmaSenha.add(pasta);
-                    ConfirmarPadraoActivity.pastaVO = pasta;
+
 
                 }
 
@@ -58,6 +56,7 @@ public class ConfirmarPadraoActivity extends ConfirmPatternActivity {
             } else {
                 if (contPastasMesmasSenha == 1) {
                     Intent it = new Intent(ConfirmarPadraoActivity.this, GaleriaActivity.class);
+                    it.putExtra("nomePasta", getNomePasta());
                     startActivity(it);
                     return true;
                 } else {
@@ -65,21 +64,7 @@ public class ConfirmarPadraoActivity extends ConfirmPatternActivity {
                 }
             }
 
-        } else {
-            String patternSha1 = ConfirmPatternActivity.pastaVO.getSenhaPasta();
-            if (TextUtils.equals(PatternUtils.patternToSha1String(pattern), patternSha1)) {
-                Intent it = new Intent(ConfirmarPadraoActivity.this, GaleriaActivity.class);
 
-                finish();
-
-
-                startActivity(it);
-            } else {
-                return false;
-            }
-
-        }
-        return false;
 
     }
 

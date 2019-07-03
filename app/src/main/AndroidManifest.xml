@@ -44,10 +44,6 @@
         <activity android:name=".activitys.GaleriaActivity"
             />
         <activity
-            android:name=".activitys.CriarPastaActivity"
-            android:label="@string/title_activity_criar_pasta"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
             android:name=".activitys.EscolherPastaActivity"
             android:label="@string/title_activity_escolher_pasta"
             ></activity>

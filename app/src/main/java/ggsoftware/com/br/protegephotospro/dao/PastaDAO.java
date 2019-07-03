@@ -108,6 +108,37 @@ public class PastaDAO {
     }
 
 
+    public List<PastaVO> listarPastas() {
+
+
+        List<PastaVO> listaPastas = new ArrayList<>();
+        Cursor rs;
+        String[] campos = {banco.ID, banco.NOME_PASTA, banco.TIMESTAMP_CRIACAO_PASTA, banco.SENHA_PASTA, banco.INVISIVEL};
+        String where = banco.INVISIVEL + " = ?";
+
+
+
+
+        db = banco.getReadableDatabase();
+        rs = db.query(TABELA_PASTA, campos, where, null, null, null, null, null);
+
+        while (rs.moveToNext()) {
+            PastaVO pastaVO = new PastaVO();
+            pastaVO.setId(rs.getInt(rs.getColumnIndex(CriaBanco.ID)));
+            pastaVO.setNomePasta(rs.getString(rs.getColumnIndex(CriaBanco.NOME_PASTA)));
+            pastaVO.setTimestampCriacaoPasta(rs.getString(rs.getColumnIndex(CriaBanco.TIMESTAMP_CRIACAO_PASTA)));
+            pastaVO.setSenhaPasta(rs.getString(rs.getColumnIndex(CriaBanco.SENHA_PASTA)));
+            pastaVO.setInvisivel(rs.getInt(rs.getColumnIndex(CriaBanco.INVISIVEL)));
+
+            listaPastas.add(pastaVO);
+        }
+        rs.close();
+        db.close();
+
+        return listaPastas;
+    }
+
+
     public boolean isModoMisto() {
 
 
