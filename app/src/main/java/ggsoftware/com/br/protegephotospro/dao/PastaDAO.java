@@ -114,13 +114,12 @@ public class PastaDAO {
         List<PastaVO> listaPastas = new ArrayList<>();
         Cursor rs;
         String[] campos = {banco.ID, banco.NOME_PASTA, banco.TIMESTAMP_CRIACAO_PASTA, banco.SENHA_PASTA, banco.INVISIVEL};
-        String where = banco.INVISIVEL + " = ?";
 
 
 
 
         db = banco.getReadableDatabase();
-        rs = db.query(TABELA_PASTA, campos, where, null, null, null, null, null);
+        rs = db.query(TABELA_PASTA, campos, null, null, null, null, null, null);
 
         while (rs.moveToNext()) {
             PastaVO pastaVO = new PastaVO();

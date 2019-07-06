@@ -33,8 +33,8 @@ public class EscolherPastaActivity extends AppCompatActivity {
     private String nomePasta;
 
     PastaDAO pastaDAO;
-    boolean isPastaVisivel;
-
+    boolean isPastaVisivel = true;
+    ListView listaPastas;
     View.OnClickListener fabListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -62,6 +62,7 @@ public class EscolherPastaActivity extends AppCompatActivity {
 
 
                                 startActivity(it);
+                                dialog.dismiss();
                             } else {
                                 Toast.makeText(EscolherPastaActivity.this, R.string.msg_erro_criar_pasta_sem_nome, Toast.LENGTH_SHORT).show();
                             }
@@ -77,27 +78,36 @@ public class EscolherPastaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_escolher_pasta);
-        final List<String> nomePastas = new ArrayList();
+         final List<String> nomePastas = new ArrayList();
 
 
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab =  findViewById(R.id.fab);
 
         fab.setOnClickListener(fabListener);
 
         pastaDAO = new PastaDAO(EscolherPastaActivity.this);
 
         Intent it = getIntent();
-        ListView listaPastas = (ListView) findViewById(R.id.lista_pastas);
+         listaPastas = (ListView) findViewById(R.id.lista_pastas);
 
         if (it.getExtras() != null && it.getExtras().get("isEmpate") != null) {
 
             setTitle(getString(R.string.msg_pastas_iguais));
-            List<PastaVO> pastas = pastaDAO.listarPastas();
+            List<PastaVO> pastas = pastaDAO.listarPastas(true);
 
+            String nomePastaSelecionada = it.getExtras().getString("nomePasta");
+            PastaVO pastaSelecionada = pastaDAO.buscarPorNome(nomePastaSelecionada);
 
             String padrao = (String) it.getExtras().get("padrao");
+
+            if (padrao.equals(pastaSelecionada.getSenhaPasta())) {
+                nomePastas.add(pastaSelecionada.getNomePasta());
+
+            }
+
+
             for (PastaVO pasta :
                     pastas) {
 
@@ -109,6 +119,7 @@ public class EscolherPastaActivity extends AppCompatActivity {
             }
 
 
+
             listaPastas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -117,11 +128,28 @@ public class EscolherPastaActivity extends AppCompatActivity {
                     Intent it = new Intent(EscolherPastaActivity.this, GaleriaActivity.class);
                     it.putExtra("nomePasta", nomePastaEscolhida);
                     startActivity(it);
+                    finish();
 
                 }
             });
+            listaPastas.setAdapter(new ArrayAdapter<String>(
+                    this, R.layout.item_list,
+                    R.id.Itemname, nomePastas));
+        }
 
-        } else {
+
+
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getIntent().getExtras() == null || getIntent().getExtras().get("isEmpate") == null) {
+
+
+            final List<String> nomePastas = new ArrayList();
 
             List<PastaVO> pastas = pastaDAO.listarPastas(false);
 
@@ -142,15 +170,14 @@ public class EscolherPastaActivity extends AppCompatActivity {
                 }
             });
 
+
+            listaPastas.setAdapter(new ArrayAdapter<String>(
+                    this, R.layout.item_list,
+                    R.id.Itemname, nomePastas));
+
         }
 
-        listaPastas.setAdapter(new ArrayAdapter<String>(
-                this, R.layout.item_list,
-                R.id.Itemname, nomePastas));
-
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

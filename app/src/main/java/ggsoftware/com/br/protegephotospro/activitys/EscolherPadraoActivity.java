@@ -66,6 +66,7 @@ public class EscolherPadraoActivity extends SetPatternActivity {
         it.putExtra("nomePasta", getNomePasta());
         it.putExtra("pattern", pattern);
         setResult(RESULT_OK);
+
         finishActivity( Constantes.ALTERAR_SENHA);
 
     }
