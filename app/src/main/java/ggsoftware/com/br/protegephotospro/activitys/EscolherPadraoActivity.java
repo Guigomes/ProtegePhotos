@@ -12,6 +12,7 @@ import ggsoftware.com.br.protegephotospro.components.pattern.PatternUtils;
 import ggsoftware.com.br.protegephotospro.components.pattern.PatternView;
 import ggsoftware.com.br.protegephotospro.components.pattern.SetPatternActivity;
 import ggsoftware.com.br.protegephotospro.dao.PastaDAO;
+import ggsoftware.com.br.protegephotospro.utils.Utils;
 
 /**
  * Created by gomes on 31/07/17.
@@ -26,6 +27,8 @@ public class EscolherPadraoActivity extends SetPatternActivity {
         String patternSha1 = PatternUtils.patternToSha1String(pattern);
 
         if (getIdPasta() > 0) {
+
+
             alterarSenhaPasta(patternSha1);
         }else{
             criarNovaPasta(patternSha1);
@@ -62,12 +65,13 @@ public class EscolherPadraoActivity extends SetPatternActivity {
 
     }
     private void alterarSenhaPasta( String pattern) {
-        Intent it = new Intent(EscolherPadraoActivity.this, GaleriaActivity.class);
+
+Intent it = new Intent();
         it.putExtra("nomePasta", getNomePasta());
         it.putExtra("pattern", pattern);
-        setResult(RESULT_OK);
 
-        finishActivity( Constantes.ALTERAR_SENHA);
+        setResult(RESULT_OK, it);
+        super.finish();
 
     }
 }

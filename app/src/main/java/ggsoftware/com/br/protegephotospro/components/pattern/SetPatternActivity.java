@@ -7,6 +7,7 @@ package ggsoftware.com.br.protegephotospro.components.pattern;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +115,8 @@ public class SetPatternActivity extends BasePatternActivity
 
 
         boolean isAlterarSenha = isAlterarSenha();
+
+
 
         if(isAlterarSenha){
             setTitle("Alterar Senha da pasta");

@@ -50,6 +50,7 @@ import ggsoftware.com.br.protegephotospro.dao.ImagemVO;
 import ggsoftware.com.br.protegephotospro.dao.PastaDAO;
 import ggsoftware.com.br.protegephotospro.dao.PastaVO;
 import ggsoftware.com.br.protegephotospro.components.pattern.ConfirmPatternActivity;
+import ggsoftware.com.br.protegephotospro.utils.Utils;
 
 import static ggsoftware.com.br.protegephotospro.Constantes.*;
 
@@ -79,9 +80,6 @@ public class GaleriaActivity extends AppCompatActivity {
         spinner = (ProgressBar) findViewById(R.id.progressBar1);
 
         Bundle extras = getIntent().getExtras();
-
-        List<Foto> mFotos = new ArrayList<>();
-
 
         String nomePasta = null;
         if (extras != null) {
@@ -141,6 +139,7 @@ public class GaleriaActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_alterar_nome_pasta:
                 alterarNomePasta();
+                break;
             case R.id.action_excluir_pasta:
                 excluirPasta();
                 break;
@@ -203,8 +202,11 @@ public class GaleriaActivity extends AppCompatActivity {
 
                 pastaSelecionada.setNomePasta(novoNomePasta);
                 pastaDAO.updatePasta(pastaSelecionada);
-                startActivity(new Intent(GaleriaActivity.this, GaleriaActivity.class));
+
+                setTitle(pastaSelecionada.getNomePasta());
+
                 Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_alterar_nome_pasta), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
 
@@ -411,7 +413,6 @@ public class GaleriaActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
         switch (requestCode) {
 
 
@@ -431,8 +432,18 @@ public class GaleriaActivity extends AppCompatActivity {
                 }
                 break;
             case Constantes.ALTERAR_SENHA:
-                String nomePasta = (String) imageReturnedIntent.getExtras().get("nomePasta");
-                String pattern = (String) imageReturnedIntent.getExtras().get("pattern");
+
+                Bundle extras = imageReturnedIntent.getExtras();
+
+                String nomePasta = null;
+                String pattern = null;
+                if(extras != null){
+                     nomePasta = extras.getString("nomePasta");
+                     pattern = extras.getString("pattern");
+
+                }
+
+
 
 
                 PastaDAO pastaDAO = new PastaDAO(GaleriaActivity.this);
