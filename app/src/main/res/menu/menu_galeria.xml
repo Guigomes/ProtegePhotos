@@ -50,6 +50,13 @@
         app:showAsAction="ifRoom"></item>
 
     <item
+        android:id="@+id/action_download_imagem"
+        android:orderInCategory="300"
+        android:title="Donwload Foto"
+        android:icon="@android:drawable/ic_menu_save"
+        app:showAsAction="ifRoom"></item>
+
+    <item
         android:id="@+id/action_excluir_imagem"
         android:orderInCategory="400"
         android:title="Deletar Foto"

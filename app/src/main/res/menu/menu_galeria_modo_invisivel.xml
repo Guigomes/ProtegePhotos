@@ -54,6 +54,12 @@
         app:showAsAction="ifRoom"></item>
 
     <item
+        android:id="@+id/action_download_imagem"
+        android:orderInCategory="300"
+        android:title="Donwload Foto"
+        android:icon="@android:drawable/ic_menu_save"
+        app:showAsAction="always"></item>
+    <item
         android:id="@+id/action_new_folder"
         android:orderInCategory="300"
         android:title="Nova Pasta"

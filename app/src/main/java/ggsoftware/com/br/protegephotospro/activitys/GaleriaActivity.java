@@ -1,17 +1,22 @@
 package ggsoftware.com.br.protegephotospro.activitys;
 
 
+import android.Manifest;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 
@@ -32,15 +37,24 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import ggsoftware.com.br.protegephotospro.Constantes;
 import ggsoftware.com.br.protegephotospro.utils.ImageSaver;
 import ggsoftware.com.br.protegephotospro.R;
@@ -70,6 +84,7 @@ public class GaleriaActivity extends AppCompatActivity {
     ImageGalleryAdapter adapter;
 
     PastaDAO pastaDAO;
+    private long downloadID;
 
 
     @Override
@@ -80,6 +95,7 @@ public class GaleriaActivity extends AppCompatActivity {
         spinner = (ProgressBar) findViewById(R.id.progressBar1);
 
         Bundle extras = getIntent().getExtras();
+        registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         String nomePasta = null;
         if (extras != null) {
@@ -165,14 +181,116 @@ public class GaleriaActivity extends AppCompatActivity {
             case R.id.share:
                 compartilharImagem();
 
-                return true;
+                break;
 
+            case R.id.action_download_imagem:
+                try {
+                    int permissionCheck = ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            1);
+
+
+                    downloadImage();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
         return true;
     }
+
+    public void writeFileExternalStorage(File internalFile) {
+
+        String aplicationName = getString(R.string.app_name);
+
+        String nameFile = internalFile.getName();
+
+        File dcimDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File picsDir = new File(dcimDir, aplicationName);
+        picsDir.mkdirs(); //make if not exist
+        File newFile = new File(picsDir, internalFile.getName());
+        OutputStream outputStream;
+        try {
+            InputStream in = new FileInputStream(internalFile);
+
+            outputStream = new FileOutputStream(newFile);
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                outputStream.write(buf, 0, len);
+            }
+            outputStream.close();
+
+            outputStream.flush();
+            outputStream.close();
+
+            Utils.toast(GaleriaActivity.this, "Download Realizado com sucesso");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void downloadImage() throws FileNotFoundException {
+
+
+        List<File> files = getFilesSelected();
+        for (File file :
+                files) {
+            writeFileExternalStorage(file);
+        }
+
+
+        cancelarSelecao();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(onDownloadComplete);
+    }
+
+    private BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Fetching the download id received with the broadcast
+            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            //Checking if the received broadcast is for our enqueued download by matching download id
+            if (downloadID == id) {
+                Toast.makeText(GaleriaActivity.this, "Download Completed", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+
+    private List<File> getFilesSelected() {
+        int count = adapter.getItemCount();
+
+        List<File> files = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+
+            Foto foto = mFotos.get(i);
+            if (foto.getSelected() == 1) {
+
+                File file = new ImageSaver(GaleriaActivity.this).loadFile(foto.getTitle());
+
+                files.add(file);
+
+            }
+
+
+        }
+        return files;
+    }
+
 
     private void removerPastasModoInvisivel() {
 
@@ -248,40 +366,10 @@ public class GaleriaActivity extends AppCompatActivity {
     }
 
     private void compartilharImagem() {
-        int count = adapter.getItemCount();
 
+        List<File> files = getFilesSelected();
 
-        for (int i = 0; i < count; i++) {
-
-            Foto foto = mFotos.get(i);
-            if (foto.getSelected() == 1) {
-                try {
-                    Toast.makeText(this, foto.getFilepath(), Toast.LENGTH_SHORT).show();
-                    File file = new ImageSaver(GaleriaActivity.this).loadFile(foto.getTitle());
-
-                    File imagePath = new File(getFilesDir(), "app_images");
-                    File newFile = new File(imagePath, foto.getTitle());
-
-                    Uri imageUri = FileProvider.getUriForFile(GaleriaActivity.this,
-                            getString(R.string.file_provider_authority),
-                            newFile);
-
-
-                    Intent shareIntent = new Intent();
-                    shareIntent.setAction(Intent.ACTION_SEND);
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    shareIntent.setType("image/*");
-                    // Launch sharing dialog for image
-                    startActivity(Intent.createChooser(shareIntent, "Share Image"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-        }
-
+        share(files);
 
         cancelarSelecao();
 
@@ -359,7 +447,8 @@ public class GaleriaActivity extends AppCompatActivity {
 
         int count = views.size();
         for (int i = 0; i < count; i++) {
-            ImageGalleryAdapter.MyViewHolder v = views.get(i);
+            ImageGalleryAdapter.MyViewHolder v;
+            v = views.get(i);
 
             //call imageview from the viewholder object by the variable name used to instatiate it
             ImageView imageView1 = v.mPhotoImageView;
@@ -378,6 +467,8 @@ public class GaleriaActivity extends AppCompatActivity {
             menu.findItem(R.id.action_cancelar_selecao).setVisible(true);
 
             menu.findItem(R.id.action_add_imagem).setVisible(false);
+
+//            menu.findItem(R.id.action_download_imagem).setVisible(true);
 
             menu.findItem(R.id.action_alterar_senha).setVisible(false);
 
@@ -437,13 +528,11 @@ public class GaleriaActivity extends AppCompatActivity {
 
                 String nomePasta = null;
                 String pattern = null;
-                if(extras != null){
-                     nomePasta = extras.getString("nomePasta");
-                     pattern = extras.getString("pattern");
+                if (extras != null) {
+                    nomePasta = extras.getString("nomePasta");
+                    pattern = extras.getString("pattern");
 
                 }
-
-
 
 
                 PastaDAO pastaDAO = new PastaDAO(GaleriaActivity.this);
@@ -629,6 +718,22 @@ public class GaleriaActivity extends AppCompatActivity {
             mFotos = fotos;
 
         }
+    }
+
+    public void share(List<File> files) {
+
+        ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder
+                .from(this)
+                .setType("image/*")
+                .setChooserTitle("Share Photo");
+
+        for (File file :
+                files) {
+            Uri uri = FileProvider.getUriForFile(this, "br.com.ggsoftware.protegephotospro.fileprovider", file);
+            builder.addStream(uri);
+        }
+
+        builder.startChooser();
     }
 
     private class SalvarImagem extends AsyncTask<Uri, Void, Boolean> {
