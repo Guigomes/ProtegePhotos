@@ -28,6 +28,7 @@ import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnScal
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnSingleFlingListener;
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnSwipeLeftListener;
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnSwipeRightListener;
+import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnToogleActionBar;
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnViewDragListener;
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnViewTapListener;
 
@@ -82,6 +83,7 @@ public class PhotoViewAttacher implements View.OnTouchListener,
     private OnLongClickListener mLongClickListener;
     private OnScaleChangedListener mScaleChangeListener;
     private OnSwipeRightListener mOnSwipeRightListener;
+    private OnToogleActionBar mOnToogleActionBar;
 
     private OnSwipeLeftListener mOnSwipeLeftListener;
 
@@ -218,7 +220,11 @@ public class PhotoViewAttacher implements View.OnTouchListener,
         mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
+                mOnToogleActionBar.toogleActionBar();
+
                 if (mOnClickListener != null) {
+                    mOnToogleActionBar.toogleActionBar();
+
                     mOnClickListener.onClick(mImageView);
                 }
                 final RectF displayRect = getDisplayRect();
@@ -285,6 +291,10 @@ public class PhotoViewAttacher implements View.OnTouchListener,
 
     public void setOnSwipeRight(OnSwipeRightListener onSwipeRightListener) {
         this.mOnSwipeRightListener = onSwipeRightListener;
+    }
+
+    public void setOnToogleActionBar(OnToogleActionBar onToogleActionBar) {
+        this.mOnToogleActionBar = onToogleActionBar;
     }
 
     public void setOnSwipeLeft(OnSwipeLeftListener onSwipeLeftListener) {
@@ -369,6 +379,7 @@ public class PhotoViewAttacher implements View.OnTouchListener,
         boolean handled = false;
         if (mZoomEnabled && Util.hasDrawable((ImageView) v)) {
             switch (ev.getAction()) {
+
                 case MotionEvent.ACTION_DOWN:
                     ViewParent parent = v.getParent();
                     // First, disable the Parent from intercepting the touch
@@ -414,7 +425,6 @@ public class PhotoViewAttacher implements View.OnTouchListener,
             if (mGestureDetector != null && mGestureDetector.onTouchEvent(ev)) {
                 handled = true;
             }
-
         }
         return handled;
     }

@@ -47,8 +47,7 @@
             android:label="@string/title_activity_galeria"
             />
         <activity android:name=".activitys.FotoActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-
+            android:label="Imagem"
             >
 
 

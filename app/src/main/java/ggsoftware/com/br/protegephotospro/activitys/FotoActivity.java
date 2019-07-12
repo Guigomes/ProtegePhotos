@@ -1,11 +1,12 @@
 package ggsoftware.com.br.protegephotospro.activitys;
 
-import android.app.ActionBar;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
@@ -20,6 +21,7 @@ import java.util.List;
 import ggsoftware.com.br.protegephotospro.R;
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnSwipeLeftListener;
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnSwipeRightListener;
+import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnToogleActionBar;
 import ggsoftware.com.br.protegephotospro.entidades.Foto;
 import ggsoftware.com.br.protegephotospro.utils.ImageSaver;
 import ggsoftware.com.br.protegephotospro.components.photoview.PhotoView;
@@ -42,7 +44,16 @@ public class FotoActivity extends AppCompatActivity {
         mImageView.setOnSwipeRight(new OnSwipeRightListener() {
             @Override
             public void onSwipeRight() {
+                toggleActionBar();
                 proximaFoto();
+            }
+        });
+
+        mImageView.setOnToogleActionBar(new OnToogleActionBar() {
+            @Override
+            public void toogleActionBar() {
+                toggleActionBar();
+
             }
         });
 
@@ -65,23 +76,7 @@ public class FotoActivity extends AppCompatActivity {
                 .error(android.R.drawable.ic_delete)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(mImageView);
-/*
 
-        mImageView.setOnTouchListener(new OnSwipeTouchListener(this) {
-
-            @Override
-            public void onSwipeRight() {
-                fotoAnterior();
-            }
-
-            @Override
-            public void onSwipeLeft() {
-                proximaFoto();
-            }
-
-        });
-
-*/
     }
 
     public void share(View v) {
@@ -96,7 +91,7 @@ public class FotoActivity extends AppCompatActivity {
     }
 
     private void toggleActionBar() {
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
             if (actionBar.isShowing()) {
@@ -132,6 +127,17 @@ public class FotoActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+
+
+        getMenuInflater().inflate(R.menu.menu_foto, menu);
+
+
+        return true;
+    }
     public void proximaFoto() {
         List<Foto> fotos = Foto.getFotos();
         for (int i = 0; i < fotos.size(); i++) {

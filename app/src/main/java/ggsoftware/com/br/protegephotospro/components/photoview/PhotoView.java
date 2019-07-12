@@ -32,6 +32,7 @@ import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnScal
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnSingleFlingListener;
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnSwipeLeftListener;
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnSwipeRightListener;
+import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnToogleActionBar;
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnViewDragListener;
 import ggsoftware.com.br.protegephotospro.components.photoview.interfaces.OnViewTapListener;
 
@@ -72,11 +73,6 @@ public class PhotoView extends AppCompatImageView {
         }
     }
 
-    public void onSwipeLeftFoto() {
-    }
-
-    public void onSwipeRightFoto() {
-    }
 
     /**
      * Get the current {@link PhotoViewAttacher} for this view. Be wary of holding on to references
@@ -235,6 +231,11 @@ public class PhotoView extends AppCompatImageView {
     public void setOnSwipeLeft(OnSwipeLeftListener listener) {
         attacher.setOnSwipeLeft(listener);
     }
+
+    public void setOnToogleActionBar(OnToogleActionBar listener) {
+        attacher.setOnToogleActionBar(listener);
+    }
+
     public void setOnPhotoTapListener(OnPhotoTapListener listener) {
         attacher.setOnPhotoTapListener(listener);
     }
