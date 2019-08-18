@@ -34,6 +34,7 @@
         <item name="pl_errorColor">#fff4511e</item>
         <item name="pl_successColor">?colorControlActivated</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

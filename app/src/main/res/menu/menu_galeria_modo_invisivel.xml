@@ -28,11 +28,20 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/share"
+        android:id="@+id/action_share"
         android:actionProviderClass="android.widget.ShareActionProvider"
         android:icon="@android:drawable/ic_menu_share"
         android:title="Share"
         app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/action_configurar_pasta"
+        android:orderInCategory="200"
+        android:title="@string/btn_configurar_pasta"
+        android:icon="@android:drawable/ic_menu_manage"
+        app:showAsAction="always" />
+
 
     <item
         android:id="@+id/action_alterar_nome_pasta"
@@ -59,14 +68,7 @@
         android:title="Donwload Foto"
         android:icon="@android:drawable/ic_menu_save"
         app:showAsAction="always"></item>
-    <item
-        android:id="@+id/action_new_folder"
-        android:orderInCategory="300"
-        android:title="Nova Pasta"
-        android:tint="@color/colorPrimary"
 
-        android:icon="@mipmap/ic_create_new_folder_white_24dp"
-        app:showAsAction="ifRoom"></item>
 
     <item
         android:id="@+id/action_excluir_imagem"
@@ -75,4 +77,13 @@
         android:visible="false"
         android:icon="@android:drawable/ic_menu_delete"
         app:showAsAction="ifRoom"></item>
+
+    <item
+        android:id="@+id/action_new_folder"
+        android:orderInCategory="300"
+        android:title="Nova Pasta"
+        android:tint="@color/colorPrimary"
+
+        android:icon="@mipmap/ic_create_new_folder_white_24dp"
+        app:showAsAction="never"></item>
 </menu>

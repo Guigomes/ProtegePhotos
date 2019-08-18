@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 
@@ -74,25 +75,28 @@ public class GaleriaActivity extends AppCompatActivity {
     PastaVO pastaSelecionada;
     List<ImagemVO> listaImagens;
     ImageDAO imagemDAO;
-    private ProgressBar spinner;
+
 
     private List<Foto> mFotos;
     private Context mContext;
 
+
+    int quantidadeArquivos = 0;
     ArrayList<ImageGalleryAdapter.MyViewHolder> views = new ArrayList<>();
     boolean modoSelecao = false;
     ImageGalleryAdapter adapter;
-
+    TextView textViewDialog;
+    ProgressBar progressBar;
+    int progress;
     PastaDAO pastaDAO;
     private long downloadID;
 
-
+    android.app.AlertDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_glide);
         pastaDAO = new PastaDAO(GaleriaActivity.this);
-        spinner = (ProgressBar) findViewById(R.id.progressBar1);
 
         Bundle extras = getIntent().getExtras();
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
@@ -178,8 +182,12 @@ public class GaleriaActivity extends AppCompatActivity {
             case R.id.action_remover_modo_invisivel:
                 removerPastasModoInvisivel();
                 break;
-            case R.id.share:
+            case R.id.action_share:
                 compartilharImagem();
+
+                break;
+            case R.id.action_configurar_pasta:
+                abrirEditarPasta();
 
                 break;
 
@@ -203,6 +211,23 @@ public class GaleriaActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void abrirEditarPasta() {
+
+
+        final View alertDialogView = LayoutInflater.from(GaleriaActivity.this).inflate
+                (R.layout.dialog_progress, null);
+        textViewDialog = alertDialogView.findViewById(R.id.txtProgress);
+        textViewDialog.setText("0/" + quantidadeArquivosAnexados);
+        progressBar = alertDialogView.findViewById(R.id.progressBar1);
+        progressBar.setMax(quantidadeArquivosAnexados);
+        dialog = new android.app.AlertDialog.Builder(GaleriaActivity.this)
+                .setView(alertDialogView)
+
+                .setCancelable(false)
+                .create();
+        dialog.show();
     }
 
     public void writeFileExternalStorage(File internalFile) {
@@ -231,7 +256,8 @@ public class GaleriaActivity extends AppCompatActivity {
             outputStream.flush();
             outputStream.close();
 
-            Utils.toast(GaleriaActivity.this, "Download Realizado com sucesso");
+
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -250,6 +276,8 @@ public class GaleriaActivity extends AppCompatActivity {
 
 
         cancelarSelecao();
+        Utils.notificar(recyclerView,getString(R.string.msg_download_sucesso));
+
     }
 
     @Override
@@ -371,7 +399,6 @@ public class GaleriaActivity extends AppCompatActivity {
 
         share(files);
 
-        cancelarSelecao();
 
 
     }
@@ -468,20 +495,24 @@ public class GaleriaActivity extends AppCompatActivity {
 
             menu.findItem(R.id.action_add_imagem).setVisible(false);
 
-//            menu.findItem(R.id.action_download_imagem).setVisible(true);
+
+            menu.findItem(R.id.action_configurar_pasta).setVisible(false);
 
             menu.findItem(R.id.action_alterar_senha).setVisible(false);
 
             menu.findItem(R.id.action_new_folder).setVisible(false);
-
+            menu.findItem(R.id.action_download_imagem).setVisible(true);
+            menu.findItem(R.id.action_share).setVisible(true);
         } else {
+            menu.findItem(R.id.action_configurar_pasta).setVisible(true);
             menu.findItem(R.id.action_excluir_imagem).setVisible(false);
             menu.findItem(R.id.action_cancelar_selecao).setVisible(false);
             menu.findItem(R.id.action_add_imagem).setVisible(true);
             menu.findItem(R.id.action_alterar_senha).setVisible(true);
 
             menu.findItem(R.id.action_new_folder).setVisible(true);
-
+            menu.findItem(R.id.action_download_imagem).setVisible(false);
+            menu.findItem(R.id.action_share).setVisible(false);
         }
         return true;
     }
@@ -511,12 +542,12 @@ public class GaleriaActivity extends AppCompatActivity {
                 if (imageReturnedIntent != null) {
                     ClipData clipData = imageReturnedIntent.getClipData();
                     if (clipData != null) {
-                        spinner.setVisibility(View.VISIBLE);
 
+                        progress = 0;
+                        showProgressDialog(clipData.getItemCount());
                         new SalvarImagens().execute(clipData);
                     } else {
                         Uri selectedImage = imageReturnedIntent.getData();
-                        spinner.setVisibility(View.VISIBLE);
 
                         new SalvarImagem().execute(selectedImage);
                     }
@@ -734,6 +765,8 @@ public class GaleriaActivity extends AppCompatActivity {
         }
 
         builder.startChooser();
+        cancelarSelecao();
+
     }
 
     private class SalvarImagem extends AsyncTask<Uri, Void, Boolean> {
@@ -768,13 +801,13 @@ public class GaleriaActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(getApplicationContext(), "Falha ao salvar imagem", Toast.LENGTH_SHORT).show();
             }
-            spinner.setVisibility(View.GONE);
 
         }
     }
 
     private class SalvarImagens extends AsyncTask<ClipData, Void, Boolean> {
         protected Boolean doInBackground(ClipData... clipdatas) {
+
             ClipData clipData = clipdatas[0];
 
             for (int i = 0; i < clipData.getItemCount(); i++) {
@@ -790,7 +823,9 @@ public class GaleriaActivity extends AppCompatActivity {
                     ImageDAO imageDAO = new ImageDAO(GaleriaActivity.this);
                     imageSaver.save(bitmap, filename);
                     imageDAO.insereDado(filename, pastaSelecionada.getNomePasta());
-
+                    progress++;
+                    progressBar.setProgress(progress, true);
+                    textViewDialog.setText(progress + "/" + quantidadeArquivos);
                 } catch (IOException e) {
                     e.printStackTrace();
 
@@ -814,12 +849,28 @@ public class GaleriaActivity extends AppCompatActivity {
 
             mFotos = Foto.getSpacePhotos(listaImagens);
             recyclerView.setAdapter(adapter);
-
-            spinner.setVisibility(View.GONE);
+            dialog.dismiss();
 
 
         }
 
 
+    }
+
+    private void showProgressDialog(int quantidadeArquivosAnexados){
+
+        quantidadeArquivos = quantidadeArquivosAnexados;
+        final View alertDialogView = LayoutInflater.from(GaleriaActivity.this).inflate
+                (R.layout.dialog_progress, null);
+        textViewDialog = alertDialogView.findViewById(R.id.txtProgress);
+        textViewDialog.setText("0/" + quantidadeArquivosAnexados);
+        progressBar = alertDialogView.findViewById(R.id.progressBar1);
+        progressBar.setMax(quantidadeArquivosAnexados);
+        dialog = new android.app.AlertDialog.Builder(GaleriaActivity.this)
+                .setView(alertDialogView)
+
+                .setCancelable(false)
+                .create();
+        dialog.show();
     }
 }

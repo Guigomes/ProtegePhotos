@@ -3,4 +3,5 @@
     <string name="msg_confirmar_padrao_invisivel">Desenhe o padrão da pasta que deseja acessar</string>
     <string name="btn_alterar_nome_pasta">Alterar nome da pasta</string>
     <string name="txt_informe_nome_novo_pasta">Informe o novo nome da pasta</string>
+    <string name="txt_protegendo_fotos">Protegendo suas fotos</string>
 </resources>

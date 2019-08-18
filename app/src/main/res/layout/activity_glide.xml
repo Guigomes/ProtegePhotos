@@ -10,7 +10,6 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_images"
-        android:layout_below="@id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
@@ -21,17 +20,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Você não possui nenhuma foto nessa pasta"
-        android:layout_below="@id/my_toolbar"
         android:visibility="gone"
         />
 
-    <ProgressBar
-        android:layout_centerInParent="true"
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+
+
+
+
 </RelativeLayout>
