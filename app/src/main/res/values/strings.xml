@@ -59,7 +59,7 @@
     <string name="btn_alterar_nome_pasta">Alterar nome da pasta</string>
     <string name="btn_excluir_pasta">Excluir Pasta</string>
     <string name="txt_informe_nome_novo_pasta">Informe o novo nome da pasta</string>
-    <string name="msg_sucesso_alterar_nome_pasta">Nome da pasta alterado com sucesso</string>
+    <string name="msg_sucesso_alterar_nome_pasta">Dados da pasta alterados com sucesso</string>
     <string name="msg_sucesso_deletar_pasta">Pasta deletada com sucesso</string>
     <string name="msg_sucesso_remover_pasta_modo_invisivel">A pasta foi removida do modo invisível</string>
     <string name="msg_pastas_iguais">Escolha a pasta desejada</string>
@@ -68,6 +68,24 @@
     <string name="rdb_invisivel">Invisível</string>
     <string name="txt_protegendo_fotos">Protegendo suas fotos</string>
     <string name="title_activity_main2">Main2Activity</string>
-    <string name="msg_download_sucesso">Fotos copias para a pasta Downloads</string>
+    <string name="msg_download_sucesso">Fotos copiadas para a pasta Downloads</string>
+    <string name="msg_download_sucesso_2">Foto copiada para a pasta Downloads/%1$s</string>
+    <string name="msg_download_erro">Erro ao exportar fotos</string>
+
     <string name="btn_configurar_pasta">Configurar pasta</string>
+    <string name="btn_alterar_dados_pasta">Alterar pasta</string>
+    <string name="msg_sucesso_deletar_foto">Foto deletada</string>
+    <string name="btn_excluir">Excluir</string>
+    <string name="msg_excluir_pasta">Tem certeza que deseja excluir a pasta %1$s e todas as fotos dela?</string>
+    <string name="msg_title_excluir_pasta">Excluir pasta</string>
+    <string name="msg_title_excluir_fotos">Excluir fotos</string>
+
+    <string name="msg_excluir_fotos">Tem certeza que deseja excluir as %1$s fotos selecionadas?</string>
+    <string name="msg_excluir_fotos_sucesso">Fotos deletadas com sucesso</string>
+    <string name="msg_title_exportar_fotos">Exportar fotos</string>
+    <string name="msg_title_exportar_foto">Exportar foto</string>
+    <string name="msg_exportar_fotos">Deseja exportar as %1$s fotos selecionadas para seu celular? Elas não estarão mais protegidas.</string>
+    <string name="msg_exportar_foto">Deseja exportar a foto %1$s para seu celular. Ela não estará mais protegida</string>
+    <string name="btn_exportar">Exportar</string>
+    <string name="btn_selecionar_todos">Selecionar Todos</string>
 </resources>

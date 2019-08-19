@@ -4,4 +4,8 @@
     <string name="btn_alterar_nome_pasta">Alterar nome da pasta</string>
     <string name="txt_informe_nome_novo_pasta">Informe o novo nome da pasta</string>
     <string name="txt_protegendo_fotos">Protegendo suas fotos</string>
+    <string name="btn_alterar_dados_pasta">Alterar pasta</string>
+    <string name="msg_sucesso_deletar_foto">Foto deletada</string>
+    <string name="msg_excluir_fotos">Tem certeza que deseja excluir as %1$s fotos selecionadas?</string>
+
 </resources>

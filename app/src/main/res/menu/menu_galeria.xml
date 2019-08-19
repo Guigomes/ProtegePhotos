@@ -7,25 +7,15 @@
 
     <item
         android:id="@+id/action_cancelar_selecao"
-        android:orderInCategory="100"
+        android:orderInCategory="500"
         android:title="@string/btn_cancelar_selecao"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:visible="false"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
 
         />
 
 
-    <item
-        android:id="@+id/action_alterar_senha"
-        android:orderInCategory="100"
-        android:title="@string/btn_alterar_senha"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_remover_modo_invisivel"
-        android:orderInCategory="100"
-        android:title="Remover pasta do modo invísivel"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_share"
@@ -35,19 +25,9 @@
         app:showAsAction="always" />
 
 
-    <item
-        android:id="@+id/action_configurar_pasta"
-        android:orderInCategory="200"
-        android:title="@string/btn_configurar_pasta"
-        android:icon="@android:drawable/ic_menu_manage"
-        app:showAsAction="always" />
 
 
-    <item
-        android:id="@+id/action_alterar_nome_pasta"
-        android:orderInCategory="200"
-        android:title="@string/btn_alterar_nome_pasta"
-        app:showAsAction="never" />
+
 
     <item
         android:id="@+id/action_excluir_pasta"
@@ -56,11 +36,11 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_add_imagem"
-        android:orderInCategory="300"
+        android:orderInCategory="100"
         android:title="Anexar Foto"
 
         android:icon="@android:drawable/ic_menu_upload"
-        app:showAsAction="ifRoom"></item>
+        app:showAsAction="always"></item>
 
     <item
         android:id="@+id/action_download_imagem"
@@ -76,7 +56,7 @@
         android:title="Deletar Foto"
         android:visible="false"
         android:icon="@android:drawable/ic_menu_delete"
-        app:showAsAction="ifRoom"></item>
+        app:showAsAction="always"></item>
 
     <item
         android:id="@+id/action_new_folder"
@@ -85,5 +65,23 @@
         android:tint="@color/colorPrimary"
 
         android:icon="@mipmap/ic_create_new_folder_white_24dp"
-        app:showAsAction="never"></item>
+        app:showAsAction="ifRoom"></item>
+
+    <item
+        android:id="@+id/action_configurar_pasta"
+        android:orderInCategory="300"
+
+        android:title="@string/btn_configurar_pasta"
+        android:icon="@android:drawable/ic_menu_manage"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_selecionar_todos"
+        android:orderInCategory="500"
+
+        android:title="@string/btn_selecionar_todos"
+        android:visible="false"
+        app:showAsAction="never" />
+
+
 </menu>

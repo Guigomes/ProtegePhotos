@@ -24,7 +24,15 @@
         />
 
 
-
+    <ProgressBar
+           android:layout_centerInParent="true"
+            android:id="@+id/progressBarCircular"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

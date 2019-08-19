@@ -193,20 +193,6 @@ public class EscolherPastaActivity extends AppCompatActivity {
     }
 
 
-    public void ativarModoInvisivel() {
-
-        List<PastaVO> pastas = pastaDAO.listarPastas(false);
-
-        for (PastaVO pasta : pastas) {
-            pasta.setInvisivel(1);
-            pastaDAO.updatePasta(pasta);
-        }
-
-        Intent it = new Intent(EscolherPastaActivity.this, ConfirmarPadraoActivity.class);
-        it.putExtra("isModoInvisivel", true);
-        finish();
-        startActivity(it);
-    }
 
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?

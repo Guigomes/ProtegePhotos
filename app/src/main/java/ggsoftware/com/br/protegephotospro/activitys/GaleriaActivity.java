@@ -16,11 +16,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,24 +28,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
@@ -56,18 +42,26 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import ggsoftware.com.br.protegephotospro.Constantes;
-import ggsoftware.com.br.protegephotospro.utils.ImageSaver;
 import ggsoftware.com.br.protegephotospro.R;
-import ggsoftware.com.br.protegephotospro.entidades.Foto;
 import ggsoftware.com.br.protegephotospro.dao.ImageDAO;
 import ggsoftware.com.br.protegephotospro.dao.ImagemVO;
 import ggsoftware.com.br.protegephotospro.dao.PastaDAO;
 import ggsoftware.com.br.protegephotospro.dao.PastaVO;
-import ggsoftware.com.br.protegephotospro.components.pattern.ConfirmPatternActivity;
+import ggsoftware.com.br.protegephotospro.entidades.Foto;
+import ggsoftware.com.br.protegephotospro.utils.ImageSaver;
 import ggsoftware.com.br.protegephotospro.utils.Utils;
 
-import static ggsoftware.com.br.protegephotospro.Constantes.*;
+import static ggsoftware.com.br.protegephotospro.Constantes.ALTERAR_SENHA;
 
 public class GaleriaActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -75,7 +69,7 @@ public class GaleriaActivity extends AppCompatActivity {
     PastaVO pastaSelecionada;
     List<ImagemVO> listaImagens;
     ImageDAO imagemDAO;
-
+    SalvarImagens salvadorImagems;
 
     private List<Foto> mFotos;
     private Context mContext;
@@ -87,17 +81,23 @@ public class GaleriaActivity extends AppCompatActivity {
     ImageGalleryAdapter adapter;
     TextView textViewDialog;
     ProgressBar progressBar;
+
+    ProgressBar progressBarCircular;
+
     int progress;
     PastaDAO pastaDAO;
     private long downloadID;
 
     android.app.AlertDialog dialog;
+     boolean isNovaPastaVisivel = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_glide);
         pastaDAO = new PastaDAO(GaleriaActivity.this);
-
+        progressBarCircular = (findViewById(R.id.progressBarCircular));
+        salvadorImagems = new SalvarImagens();
         Bundle extras = getIntent().getExtras();
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -146,7 +146,7 @@ public class GaleriaActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 
 
-        getMenuInflater().inflate(R.menu.menu_galeria_modo_invisivel, menu);
+        getMenuInflater().inflate(R.menu.menu_galeria, menu);
 
 
         return true;
@@ -157,17 +157,20 @@ public class GaleriaActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_alterar_nome_pasta:
-                alterarNomePasta();
+
+            case R.id.action_selecionar_todos:
+                selecionarTodos();
                 break;
             case R.id.action_excluir_pasta:
-                excluirPasta();
+                abrirDialogExcluirPasta();
+
                 break;
             case R.id.action_add_imagem:
                 addImagem();
                 break;
             case R.id.action_excluir_imagem:
-                excluirImagem();
+                abrirDialogExcluirFotos();
+
                 break;
             case R.id.action_cancelar_selecao:
                 cancelarSelecao();
@@ -175,13 +178,7 @@ public class GaleriaActivity extends AppCompatActivity {
             case R.id.action_new_folder:
                 criarNovaPasta();
                 break;
-            case R.id.action_alterar_senha:
-                alterarSenhaPasta();
-                break;
 
-            case R.id.action_remover_modo_invisivel:
-                removerPastasModoInvisivel();
-                break;
             case R.id.action_share:
                 compartilharImagem();
 
@@ -192,7 +189,7 @@ public class GaleriaActivity extends AppCompatActivity {
                 break;
 
             case R.id.action_download_imagem:
-                try {
+
                     int permissionCheck = ContextCompat.checkSelfPermission(this,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -200,11 +197,9 @@ public class GaleriaActivity extends AppCompatActivity {
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             1);
 
+                    abrirDialogExportarFotos();
 
-                    downloadImage();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -213,70 +208,116 @@ public class GaleriaActivity extends AppCompatActivity {
         return true;
     }
 
-    private void abrirEditarPasta() {
+    private void selecionarTodos() {
+        for (Foto foto : mFotos) {
+            foto.setSelected(1);
+        }
 
+        int count = views.size();
+        for (int i = 0; i < count; i++) {
+            ImageGalleryAdapter.MyViewHolder v;
+            v = views.get(i);
+
+            //call imageview from the viewholder object by the variable name used to instatiate it
+            ImageView imageView1 = v.mPhotoImageView;
+            ImageView imageView3 = v.mImageCheck;
+            imageView3.setVisibility(View.VISIBLE);
+            imageView1.setPadding(30, 30, 30, 30);
+
+        }
+        modoSelecao = true;
+        GaleriaActivity.this.invalidateOptionsMenu();
+    }
+
+    private void abrirEditarPasta() {
+        final android.app.AlertDialog dialog;
 
         final View alertDialogView = LayoutInflater.from(GaleriaActivity.this).inflate
-                (R.layout.dialog_progress, null);
-        textViewDialog = alertDialogView.findViewById(R.id.txtProgress);
-        textViewDialog.setText("0/" + quantidadeArquivosAnexados);
-        progressBar = alertDialogView.findViewById(R.id.progressBar1);
-        progressBar.setMax(quantidadeArquivosAnexados);
+                (R.layout.dialog_configurar_pasta, null);
+
+
+        final EditText edtNomeAlterarPasta = alertDialogView.findViewById(R.id.edtNomeAlterarPasta);
+
+        final RadioButton rdbVisivel = alertDialogView.findViewById(R.id.rdb_visivel);
+
+        RadioButton rdbInvisivel = alertDialogView.findViewById(R.id.rdb_invisivel);
+
+
+        if(pastaSelecionada.getInvisivel() == 0){
+            rdbVisivel.setChecked(true);
+        }else{
+            rdbInvisivel.setChecked(true);
+        }
+        edtNomeAlterarPasta.setText(pastaSelecionada.getNomePasta());
         dialog = new android.app.AlertDialog.Builder(GaleriaActivity.this)
                 .setView(alertDialogView)
+                .setPositiveButton(R.string.btn_alterar_dados_pasta, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                .setCancelable(false)
+                        boolean pastaAlterada = false;
+
+
+                        String novoNomePasta = edtNomeAlterarPasta.getText().toString();
+
+                        if(!novoNomePasta.equalsIgnoreCase(pastaSelecionada.getNomePasta())){
+                            pastaSelecionada.setNomePasta(novoNomePasta);
+                            pastaAlterada = true;
+                        }
+
+                        boolean novoIsVisivel = rdbVisivel.isChecked();
+
+                        boolean isVisivel = pastaSelecionada.getInvisivel() == 0;
+
+                        if(!isVisivel == novoIsVisivel){
+                            pastaSelecionada.setInvisivel(novoIsVisivel ? 0 : 1);
+                            pastaAlterada = true;
+                        }
+
+
+
+if(pastaAlterada) {
+    pastaDAO.updatePasta(pastaSelecionada);
+
+    setTitle(pastaSelecionada.getNomePasta());
+
+    Utils.notificar(recyclerView, getString(R.string.msg_sucesso_alterar_nome_pasta));
+}
+
+                    }
+                }).setNeutralButton(R.string.btn_alterar_senha, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alterarSenhaPasta();
+                    }
+                })
+
+                .setCancelable(true)
                 .create();
         dialog.show();
     }
 
-    public void writeFileExternalStorage(File internalFile) {
 
-        String aplicationName = getString(R.string.app_name);
-
-        String nameFile = internalFile.getName();
-
-        File dcimDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File picsDir = new File(dcimDir, aplicationName);
-        picsDir.mkdirs(); //make if not exist
-        File newFile = new File(picsDir, internalFile.getName());
-        OutputStream outputStream;
-        try {
-            InputStream in = new FileInputStream(internalFile);
-
-            outputStream = new FileOutputStream(newFile);
-
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                outputStream.write(buf, 0, len);
-            }
-            outputStream.close();
-
-            outputStream.flush();
-            outputStream.close();
-
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void downloadImage() throws FileNotFoundException {
 
-
+        boolean salvo = false;
         List<File> files = getFilesSelected();
         for (File file :
                 files) {
-            writeFileExternalStorage(file);
+             salvo = Utils.writeFileExternalStorage(GaleriaActivity.this, file);
+            if(!salvo){
+                break;
+            }
         }
 
-
         cancelarSelecao();
-        Utils.notificar(recyclerView,getString(R.string.msg_download_sucesso));
+        if(salvo) {
+            Utils.notificar(recyclerView,getString(R.string.msg_download_sucesso_2, getString(R.string.app_name)));
+
+        }else{
+            Utils.notificar(recyclerView, getString(R.string.msg_download_erro));
+        }
 
     }
 
@@ -320,52 +361,7 @@ public class GaleriaActivity extends AppCompatActivity {
     }
 
 
-    private void removerPastasModoInvisivel() {
 
-        pastaSelecionada.setInvisivel(0);
-        pastaDAO.updatePasta(pastaSelecionada);
-
-        startActivity(new Intent(GaleriaActivity.this, MainActivity.class));
-        Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_remover_pasta_modo_invisivel), Toast.LENGTH_SHORT).show();
-    }
-
-
-    private void alterarNomePasta() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GaleriaActivity.this);
-        builder.setTitle(getString(R.string.txt_informe_nome_novo_pasta));
-
-
-        final EditText input = new EditText(GaleriaActivity.this);
-
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setTextColor(Color.BLACK);
-        builder.setView(input);
-
-        builder.setPositiveButton(getString(R.string.btn_alterar_nome_pasta), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String novoNomePasta = input.getText().toString();
-
-                pastaSelecionada.setNomePasta(novoNomePasta);
-                pastaDAO.updatePasta(pastaSelecionada);
-
-                setTitle(pastaSelecionada.getNomePasta());
-
-                Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_alterar_nome_pasta), Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        });
-
-        builder.setNegativeButton(getString(R.string.btn_cancelar), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-
-    }
 
 
     private void excluirImagem() {
@@ -389,7 +385,10 @@ public class GaleriaActivity extends AppCompatActivity {
         ImageGalleryAdapter adapter = new ImageGalleryAdapter(this, mFotos);
         recyclerView.setAdapter(adapter);
         cancelarSelecao();
-
+Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
+        if(mFotos.isEmpty()){
+            ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -404,37 +403,44 @@ public class GaleriaActivity extends AppCompatActivity {
     }
 
     private void criarNovaPasta() {
-        AlertDialog.Builder builderCriarNovaPasta = new AlertDialog.Builder(GaleriaActivity.this);
-        builderCriarNovaPasta.setTitle(getString(R.string.txt_informe_nome_pasta));
+
+        final android.app.AlertDialog dialog;
+
+        final View alertDialogView = LayoutInflater.from(GaleriaActivity.this).inflate
+                (R.layout.dialog_nova_pasta, null);
+        final View titleView = LayoutInflater.from(GaleriaActivity.this).inflate(R.layout.dialog_nova_pasta_title, null);
+
+        dialog = new android.app.AlertDialog.Builder(GaleriaActivity.this)
+                .setView(alertDialogView)
+                .setCustomTitle(titleView)
+                .setPositiveButton(R.string.btn_criar_pasta, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    String    nomePasta = ((EditText) alertDialogView.findViewById(R.id.edtNomeNovaPasta)).getText().toString();
 
 
-        final EditText inputNomePasta = new EditText(GaleriaActivity.this);
+                        if (nomePasta != null && !nomePasta.isEmpty()) {
+                            Intent it = new Intent(GaleriaActivity.this, EscolherPadraoActivity.class);
 
-        inputNomePasta.setInputType(InputType.TYPE_CLASS_TEXT);
-        inputNomePasta.setTextColor(Color.BLACK);
-        builderCriarNovaPasta.setView(inputNomePasta);
+                            it.putExtra("idPasta", -1);
+                            it.putExtra("nomePasta", nomePasta);
+                            it.putExtra("isPastaVisivel", isNovaPastaVisivel);
 
-        builderCriarNovaPasta.setPositiveButton(getString(R.string.btn_criar_pasta), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String nomePasta = inputNomePasta.getText().toString();
 
-                Intent it = new Intent(GaleriaActivity.this, EscolherPadraoActivity.class);
+                            startActivity(it);
+                            dialog.dismiss();
+                        } else {
+                            Toast.makeText(GaleriaActivity.this, R.string.msg_erro_criar_pasta_sem_nome, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setCancelable(true)
+                .create();
+        dialog.show();
 
-                it.putExtra("idPasta", -1);
-                it.putExtra("nomePasta", nomePasta);
-                startActivity(it);
-            }
-        });
 
-        builderCriarNovaPasta.setNegativeButton(getString(R.string.btn_cancelar), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
 
-        builderCriarNovaPasta.show();
+
     }
 
     private void alterarSenhaPasta() {
@@ -454,15 +460,113 @@ public class GaleriaActivity extends AppCompatActivity {
 
     }
 
+    private void abrirDialogExcluirPasta(){
+        android.app.AlertDialog.Builder dialogExcluir =  new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
+
+        dialogExcluir.setTitle(R.string.msg_title_excluir_pasta)
+        .setMessage(getString(R.string.msg_excluir_pasta, pastaSelecionada.getNomePasta()))
+        .setPositiveButton(getString(R.string.btn_excluir), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+excluirPasta();
+            }
+        }).setNegativeButton(getString(R.string.btn_cancelar), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+
+            }
+        }).show();
+    }
+
+
+    private void abrirDialogExcluirFotos(){
+        android.app.AlertDialog.Builder dialogExcluir =  new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
+
+        String mensagemExcluirFotos = "";
+        if(getFilesSelected().size() == 1){
+            String nomeFotoSelecionada = "";
+            for (Foto foto : mFotos) {
+
+                if (foto.getSelected() == 1) {
+                    nomeFotoSelecionada = foto.getTitle();
+                    break;
+                }
+
+            }
+            mensagemExcluirFotos = getString(R.string.msg_excluir_foto, nomeFotoSelecionada );
+        }else{
+            mensagemExcluirFotos = getString(R.string.msg_excluir_fotos, String.valueOf(getFilesSelected().size()));
+        }
+        dialogExcluir.setTitle(R.string.msg_title_excluir_fotos)
+                .setMessage(mensagemExcluirFotos)
+                .setPositiveButton(getString(R.string.btn_excluir), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        excluirImagem();
+                    }
+                }).setNegativeButton(getString(R.string.btn_cancelar), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+
+            }
+        }).show();
+    }
+
+    private void abrirDialogExportarFotos(){
+        android.app.AlertDialog.Builder dialogExcluir =  new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
+
+        String  mensagemExportarFotos = "";
+
+        if(getFilesSelected().size() == 1){
+            String nomeFotoSelecionada = "";
+            for (Foto foto : mFotos) {
+
+                if (foto.getSelected() == 1) {
+                    nomeFotoSelecionada = foto.getTitle();
+                    break;
+                }
+
+            }
+            mensagemExportarFotos = getString(R.string.msg_exportar_foto,nomeFotoSelecionada);
+            dialogExcluir.setTitle(R.string.msg_title_exportar_foto);
+        }else{
+            mensagemExportarFotos = getString(R.string.msg_exportar_fotos,String.valueOf(getFilesSelected().size()));;
+            dialogExcluir.setTitle(R.string.msg_title_exportar_fotos);
+        }
+
+
+
+        dialogExcluir.setMessage(mensagemExportarFotos)
+                .setPositiveButton(getString(R.string.btn_exportar), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            downloadImage();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).setNegativeButton(getString(R.string.btn_cancelar), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+
+            }
+        }).show();
+    }
     private void excluirPasta() {
         PastaDAO pastaDAO = new PastaDAO(GaleriaActivity.this);
 
         pastaDAO.excluir(pastaSelecionada.getId());
 
-        Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_deletar_pasta), Toast.LENGTH_SHORT).show();
+
+
+
 
         startActivity(new Intent(GaleriaActivity.this, MainActivity.class));
-
+        Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_deletar_pasta), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -494,21 +598,22 @@ public class GaleriaActivity extends AppCompatActivity {
             menu.findItem(R.id.action_cancelar_selecao).setVisible(true);
 
             menu.findItem(R.id.action_add_imagem).setVisible(false);
-
+            menu.findItem(R.id.action_excluir_pasta).setVisible(false);
+            menu.findItem(R.id.action_selecionar_todos).setVisible(true);
 
             menu.findItem(R.id.action_configurar_pasta).setVisible(false);
 
-            menu.findItem(R.id.action_alterar_senha).setVisible(false);
 
             menu.findItem(R.id.action_new_folder).setVisible(false);
             menu.findItem(R.id.action_download_imagem).setVisible(true);
             menu.findItem(R.id.action_share).setVisible(true);
         } else {
+            menu.findItem(R.id.action_selecionar_todos).setVisible(false);
+            menu.findItem(R.id.action_excluir_pasta).setVisible(true);
             menu.findItem(R.id.action_configurar_pasta).setVisible(true);
             menu.findItem(R.id.action_excluir_imagem).setVisible(false);
             menu.findItem(R.id.action_cancelar_selecao).setVisible(false);
             menu.findItem(R.id.action_add_imagem).setVisible(true);
-            menu.findItem(R.id.action_alterar_senha).setVisible(true);
 
             menu.findItem(R.id.action_new_folder).setVisible(true);
             menu.findItem(R.id.action_download_imagem).setVisible(false);
@@ -545,10 +650,10 @@ public class GaleriaActivity extends AppCompatActivity {
 
                         progress = 0;
                         showProgressDialog(clipData.getItemCount());
-                        new SalvarImagens().execute(clipData);
+                        salvadorImagems.execute(clipData);
                     } else {
                         Uri selectedImage = imageReturnedIntent.getData();
-
+                        progressBarCircular.setVisibility(View.VISIBLE);
                         new SalvarImagem().execute(selectedImage);
                     }
                 }
@@ -575,24 +680,44 @@ public class GaleriaActivity extends AppCompatActivity {
 
 
                     if (sucesso) {
-                        Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_alterar_senha), Toast.LENGTH_SHORT).show();
+                        Utils.notificar(recyclerView,  getString(R.string.msg_sucesso_alterar_senha));
                         Intent it = new Intent(GaleriaActivity.this, GaleriaActivity.class);
                         it.putExtra("nomePasta", nomePasta);
                         startActivity(it);
                         finish();
 
                     } else {
-                        Toast.makeText(GaleriaActivity.this, getString(R.string.msg_erro_criar_pasta), Toast.LENGTH_SHORT).show();
+
+                        Utils.notificar(recyclerView, getString(R.string.msg_erro_criar_pasta));
+
                     }
                 } else {
-                    Toast.makeText(GaleriaActivity.this, getString(R.string.msg_pasta_nao_existe), Toast.LENGTH_SHORT).show();
+                    Utils.notificar(recyclerView, getString(R.string.msg_pasta_nao_existe));
+
 
                 }
         }
 
 
     }
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
 
+        // Check which radio button was clicked
+        switch (view.getId()) {
+            case R.id.rdb_visivel:
+                if (checked)
+                    isNovaPastaVisivel = true;
+
+                break;
+            case R.id.rdb_invisivel:
+                if (checked)
+                    isNovaPastaVisivel = false;
+
+                break;
+        }
+    }
     private String queryName(ContentResolver resolver, Uri uri) {
         Cursor returnCursor =
                 resolver.query(uri, null, null, null, null);
@@ -623,6 +748,7 @@ public class GaleriaActivity extends AppCompatActivity {
         public void onBindViewHolder(ImageGalleryAdapter.MyViewHolder holder, int position) {
 
             Foto foto = mFotos.get(position);
+
             ImageView imageView = holder.mPhotoImageView;
 
             ImageSaver imageSaver = new ImageSaver(GaleriaActivity.this);
@@ -797,7 +923,7 @@ public class GaleriaActivity extends AppCompatActivity {
 
                 ImageGalleryAdapter adapter = new ImageGalleryAdapter(GaleriaActivity.this, Foto.getSpacePhotos(listaImagens));
                 recyclerView.setAdapter(adapter);
-
+                progressBarCircular.setVisibility(View.INVISIBLE);
             } else {
                 Toast.makeText(getApplicationContext(), "Falha ao salvar imagem", Toast.LENGTH_SHORT).show();
             }
@@ -868,7 +994,14 @@ public class GaleriaActivity extends AppCompatActivity {
         progressBar.setMax(quantidadeArquivosAnexados);
         dialog = new android.app.AlertDialog.Builder(GaleriaActivity.this)
                 .setView(alertDialogView)
-
+.setNegativeButton(R.string.btn_cancelar, new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        salvadorImagems.cancel(true);
+        salvadorImagems.onPostExecute(true);
+        dialog.dismiss();
+    }
+})
                 .setCancelable(false)
                 .create();
         dialog.show();
