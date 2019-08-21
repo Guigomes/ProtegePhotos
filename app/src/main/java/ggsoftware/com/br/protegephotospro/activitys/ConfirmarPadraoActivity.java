@@ -36,14 +36,16 @@ public class ConfirmarPadraoActivity extends ConfirmPatternActivity {
 
         List<PastaVO> pastasInvisiveis = pastaDAO.listarPastas(true);
 
+        PastaVO pastaSelecionada = null;
 
-        PastaVO pastaSelecionada = pastaDAO.buscarPorNome(getNomePasta());
-
+        if(getNomePasta() != null) {
+          pastaSelecionada = pastaDAO.buscarPorNome(getNomePasta());
+        }
         int contPastasMesmasSenha = 0;
 
         List<PastaVO> pastasMesmaSenha = new ArrayList<>();
 
-        if(pastaSelecionada.getSenhaPasta().equalsIgnoreCase(padrao)){
+        if(pastaSelecionada != null && pastaSelecionada.getSenhaPasta().equalsIgnoreCase(padrao)){
 
             pastasMesmaSenha.add(pastaSelecionada);
             contPastasMesmasSenha++;
@@ -71,7 +73,7 @@ public class ConfirmarPadraoActivity extends ConfirmPatternActivity {
             return true;
         } else {
             if (contPastasMesmasSenha == 1) {
-                if ( pastaSelecionada.getNomePasta().equalsIgnoreCase(pastasMesmaSenha.get(0).getNomePasta()) ) {
+                if (pastaSelecionada != null && pastaSelecionada.getNomePasta().equalsIgnoreCase(pastasMesmaSenha.get(0).getNomePasta()) ) {
                     Intent it = new Intent(ConfirmarPadraoActivity.this, GaleriaActivity.class);
                     it.putExtra("nomePasta", pastaSelecionada.getNomePasta());
                     startActivity(it);

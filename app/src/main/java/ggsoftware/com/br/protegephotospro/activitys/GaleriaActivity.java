@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -61,6 +62,7 @@ import ggsoftware.com.br.protegephotospro.entidades.Foto;
 import ggsoftware.com.br.protegephotospro.utils.ImageSaver;
 import ggsoftware.com.br.protegephotospro.utils.Utils;
 
+import static android.graphics.Color.parseColor;
 import static ggsoftware.com.br.protegephotospro.Constantes.ALTERAR_SENHA;
 
 public class GaleriaActivity extends AppCompatActivity {
@@ -433,10 +435,14 @@ Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
                             Toast.makeText(GaleriaActivity.this, R.string.msg_erro_criar_pasta_sem_nome, Toast.LENGTH_SHORT).show();
                         }
                     }
-                })
+                } )
                 .setCancelable(true)
                 .create();
         dialog.show();
+        Button BA = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        BA.setTextColor(parseColor("#2E9AFE"));
+        BA.setBackgroundColor(parseColor("#000000"));
+
 
 
 

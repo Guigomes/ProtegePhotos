@@ -29,18 +29,30 @@ public class MainActivity extends AppCompatActivity {
         pastaDAO = new PastaDAO(MainActivity.this);
 
 
-        List<PastaVO> listaPastas = pastaDAO.listarPastas(false);
+        List<PastaVO> listaPastasVisiveis = pastaDAO.listarPastas(false);
 
 
-        if (listaPastas.isEmpty()) {
+        if (listaPastasVisiveis.isEmpty()) {
 
-            Intent it = new Intent(MainActivity.this,
-                    EscolherPadraoActivity.class);
-
+            List<PastaVO> listaPastasInvisiveis = pastaDAO.listarPastas(true);
 
 
-            startActivity(it);
-            finish();
+
+            if(listaPastasInvisiveis.isEmpty()) {
+                Intent it = new Intent(MainActivity.this,
+                        EscolherPadraoActivity.class);
+
+
+                startActivity(it);
+                finish();
+            }else{
+                Intent it = new Intent(MainActivity.this,
+                        ConfirmarPadraoActivity.class);
+
+
+                startActivity(it);
+                finish();
+            }
         } else {
             startActivity(new Intent(MainActivity.this, EscolherPastaActivity.class));
             finish();

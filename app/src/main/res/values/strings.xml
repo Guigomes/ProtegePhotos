@@ -46,12 +46,12 @@
     <string name="pl_access_pattern_detected">Pattern completed</string>
     <string name="pl_access_pattern_area">Pattern area.</string>
 
-    <string name="app_name">ProtegeFotos</string>
+    <string name="app_name">Protege Fotos</string>
     <string name="title_activity_galeria">Criar nova pasta</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_criar_pasta">CriarPastaActivity</string>
-    <string name="title_activity_escolher_pasta">Escolha a pasta que deseja acessar</string>
+    <string name="title_activity_escolher_pasta">Minhas pastas</string>
     <string name="msg_pasta_repetida">Você já tem uma pasta com esse nome</string>
     <string name="msg_pasta_nao_existe">Pasta não pôde ser encontrada</string>
 
@@ -88,4 +88,5 @@
     <string name="msg_exportar_foto">Deseja exportar a foto %1$s para seu celular. Ela não estará mais protegida</string>
     <string name="btn_exportar">Exportar</string>
     <string name="btn_selecionar_todos">Selecionar Todos</string>
+    <string name="txt_pergunta_invisivel">O que é uma pasta invisível?</string>
 </resources>
