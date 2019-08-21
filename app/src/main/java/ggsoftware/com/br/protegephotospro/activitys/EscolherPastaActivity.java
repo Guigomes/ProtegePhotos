@@ -13,11 +13,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -27,6 +29,9 @@ import ggsoftware.com.br.protegephotospro.R;
 import ggsoftware.com.br.protegephotospro.dao.PastaDAO;
 import ggsoftware.com.br.protegephotospro.dao.PastaVO;
 import ggsoftware.com.br.protegephotospro.components.pattern.ConfirmPatternActivity;
+import ggsoftware.com.br.protegephotospro.utils.Utils;
+
+import static android.graphics.Color.parseColor;
 
 public class EscolherPastaActivity extends AppCompatActivity {
 
@@ -38,15 +43,14 @@ public class EscolherPastaActivity extends AppCompatActivity {
     View.OnClickListener fabListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            final AlertDialog dialog;
+            final androidx.appcompat.app.AlertDialog dialog;
 
             final View alertDialogView = LayoutInflater.from(EscolherPastaActivity.this).inflate
                     (R.layout.dialog_nova_pasta, null);
-            final View titleView = LayoutInflater.from(EscolherPastaActivity.this).inflate(R.layout.dialog_nova_pasta_title, null);
 
-            dialog = new AlertDialog.Builder(EscolherPastaActivity.this)
-                    .setView(alertDialogView)
-                    .setCustomTitle(titleView)
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(EscolherPastaActivity.this)
+                    .setTitle(getString(R.string.title_criar_nova_pasta))
+                   .setView(alertDialogView)
                     .setPositiveButton(R.string.btn_criar_pasta, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -64,13 +68,26 @@ public class EscolherPastaActivity extends AppCompatActivity {
                                 startActivity(it);
                                 dialog.dismiss();
                             } else {
-                                Toast.makeText(EscolherPastaActivity.this, R.string.msg_erro_criar_pasta_sem_nome, Toast.LENGTH_SHORT).show();
+
+                                Utils.notificar(listaPastas,getString( R.string.msg_erro_criar_pasta_sem_nome) );
+
+
                             }
                         }
                     })
-                    .setCancelable(true)
-                    .create();
+                    .setNeutralButton(R.string.btn_cancelar, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setCancelable(true);
+
+            dialog = builder.create();
+
             dialog.show();
+
+
         }
     };
 
@@ -213,5 +230,24 @@ public class EscolherPastaActivity extends AppCompatActivity {
         }
     }
 
+    public void abrirDialogInfoInvisivel(View v){
+        final androidx.appcompat.app.AlertDialog dialog;
 
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(EscolherPastaActivity.this)
+                .setTitle(getString(R.string.title_criar_nova_pasta_informacoes))
+                .setMessage(getString(R.string.texto_pasta_invisivel))
+                .setPositiveButton(R.string.btn_entendi, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+
+                })
+
+                .setCancelable(true);
+
+        dialog = builder.create();
+
+        dialog.show();
+    }
 }

@@ -12,24 +12,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +43,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -62,7 +61,6 @@ import ggsoftware.com.br.protegephotospro.entidades.Foto;
 import ggsoftware.com.br.protegephotospro.utils.ImageSaver;
 import ggsoftware.com.br.protegephotospro.utils.Utils;
 
-import static android.graphics.Color.parseColor;
 import static ggsoftware.com.br.protegephotospro.Constantes.ALTERAR_SENHA;
 
 public class GaleriaActivity extends AppCompatActivity {
@@ -77,6 +75,7 @@ public class GaleriaActivity extends AppCompatActivity {
     private Context mContext;
 
 
+    RelativeLayout root;
     int quantidadeArquivos = 0;
     ArrayList<ImageGalleryAdapter.MyViewHolder> views = new ArrayList<>();
     boolean modoSelecao = false;
@@ -101,6 +100,7 @@ public class GaleriaActivity extends AppCompatActivity {
         progressBarCircular = (findViewById(R.id.progressBarCircular));
         salvadorImagems = new SalvarImagens();
         Bundle extras = getIntent().getExtras();
+     //    root  =(RelativeLayout) findViewById(R.id.galeria_root);
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         String nomePasta = null;
@@ -232,7 +232,7 @@ public class GaleriaActivity extends AppCompatActivity {
     }
 
     private void abrirEditarPasta() {
-        final android.app.AlertDialog dialog;
+        final AlertDialog dialog;
 
         final View alertDialogView = LayoutInflater.from(GaleriaActivity.this).inflate
                 (R.layout.dialog_configurar_pasta, null);
@@ -251,8 +251,10 @@ public class GaleriaActivity extends AppCompatActivity {
             rdbInvisivel.setChecked(true);
         }
         edtNomeAlterarPasta.setText(pastaSelecionada.getNomePasta());
-        dialog = new android.app.AlertDialog.Builder(GaleriaActivity.this)
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(GaleriaActivity.this)
                 .setView(alertDialogView)
+                .setTitle(getString(R.string.title_alterar_dados_pasta))
                 .setPositiveButton(R.string.btn_alterar_dados_pasta, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -278,13 +280,13 @@ public class GaleriaActivity extends AppCompatActivity {
 
 
 
-if(pastaAlterada) {
-    pastaDAO.updatePasta(pastaSelecionada);
+                        if(pastaAlterada) {
+                            pastaDAO.updatePasta(pastaSelecionada);
 
-    setTitle(pastaSelecionada.getNomePasta());
+                            setTitle(pastaSelecionada.getNomePasta());
 
-    Utils.notificar(recyclerView, getString(R.string.msg_sucesso_alterar_nome_pasta));
-}
+                            Utils.notificar(recyclerView, getString(R.string.msg_sucesso_alterar_nome_pasta));
+                        }
 
                     }
                 }).setNeutralButton(R.string.btn_alterar_senha, new DialogInterface.OnClickListener() {
@@ -294,8 +296,8 @@ if(pastaAlterada) {
                     }
                 })
 
-                .setCancelable(true)
-                .create();
+                .setCancelable(true);
+        dialog = builder.create();
         dialog.show();
     }
 
@@ -404,21 +406,21 @@ Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
 
     }
 
-    private void criarNovaPasta() {
 
-        final android.app.AlertDialog dialog;
+
+    private void criarNovaPasta() {
+        final androidx.appcompat.app.AlertDialog dialog;
 
         final View alertDialogView = LayoutInflater.from(GaleriaActivity.this).inflate
                 (R.layout.dialog_nova_pasta, null);
-        final View titleView = LayoutInflater.from(GaleriaActivity.this).inflate(R.layout.dialog_nova_pasta_title, null);
 
-        dialog = new android.app.AlertDialog.Builder(GaleriaActivity.this)
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(GaleriaActivity.this)
+                .setTitle(getString(R.string.title_criar_nova_pasta))
                 .setView(alertDialogView)
-                .setCustomTitle(titleView)
                 .setPositiveButton(R.string.btn_criar_pasta, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                    String    nomePasta = ((EditText) alertDialogView.findViewById(R.id.edtNomeNovaPasta)).getText().toString();
+                        String    nomePasta = ((EditText) alertDialogView.findViewById(R.id.edtNomeNovaPasta)).getText().toString();
 
 
                         if (nomePasta != null && !nomePasta.isEmpty()) {
@@ -432,24 +434,26 @@ Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
                             startActivity(it);
                             dialog.dismiss();
                         } else {
-                            Toast.makeText(GaleriaActivity.this, R.string.msg_erro_criar_pasta_sem_nome, Toast.LENGTH_SHORT).show();
+                            Utils.notificar(recyclerView,getString( R.string.msg_erro_criar_pasta_sem_nome) );
+
                         }
                     }
-                } )
-                .setCancelable(true)
-                .create();
+                })
+                .setNeutralButton(R.string.btn_cancelar, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setCancelable(true);
+
+        dialog = builder.create();
+
         dialog.show();
-        Button BA = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        BA.setTextColor(parseColor("#2E9AFE"));
-        BA.setBackgroundColor(parseColor("#000000"));
-
-
-
 
 
     }
-
-    private void alterarSenhaPasta() {
+        private void alterarSenhaPasta() {
         Intent it = new Intent(GaleriaActivity.this,
                 EscolherPadraoActivity.class);
 
@@ -988,7 +992,26 @@ excluirPasta();
 
 
     }
+    public void abrirDialogInfoInvisivel(View v){
+        final androidx.appcompat.app.AlertDialog dialog;
 
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(GaleriaActivity.this)
+                .setTitle(getString(R.string.title_criar_nova_pasta_informacoes))
+                .setMessage(getString(R.string.texto_pasta_invisivel))
+                .setPositiveButton(R.string.btn_entendi, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+
+                })
+
+                .setCancelable(true);
+
+        dialog = builder.create();
+
+        dialog.show();
+    }
     private void showProgressDialog(int quantidadeArquivosAnexados){
 
         quantidadeArquivos = quantidadeArquivosAnexados;

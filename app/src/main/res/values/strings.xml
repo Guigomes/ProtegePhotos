@@ -89,4 +89,10 @@
     <string name="btn_exportar">Exportar</string>
     <string name="btn_selecionar_todos">Selecionar Todos</string>
     <string name="txt_pergunta_invisivel">O que é uma pasta invisível?</string>
+    <string name="title_criar_nova_pasta">Criar nova pasta</string>
+    <string name="txt_visibilidade_pasta">Qual será a visibilidade da pasta?</string>
+    <string name="title_criar_nova_pasta_informacoes">O que é uma pasta invísivel</string>
+    <string name="texto_pasta_invisivel">uma pasta invisivel</string>
+    <string name="btn_entendi">Entendi</string>
+    <string name="title_alterar_dados_pasta">Alterar dados da pasta</string>
 </resources>

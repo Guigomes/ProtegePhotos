@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+    >
+
+<View style="@style/Divider"
+
+    />
+<LinearLayout
+    android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
+
+
 
     <TextView android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -16,6 +28,10 @@
         android:textColor="@color/colorPrimary"
         android:id="@+id/edtNomeAlterarPasta"
         />
+
+    <TextView android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/txt_visibilidade_pasta"/>
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -29,7 +45,7 @@
             android:text="@string/rdb_visivel"
             android:checked="true"
             android:id="@+id/rdb_visivel"
-
+            android:onClick="onRadioButtonClicked"
             />
 
         <RadioButton
@@ -37,8 +53,34 @@
             android:layout_height="wrap_content"
             android:text="@string/rdb_invisivel"
             android:id="@+id/rdb_invisivel"
-
+            android:onClick="onRadioButtonClicked"
             />
 
     </RadioGroup>
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="10sp"
+        android:background="@drawable/border"
+        android:padding="5dp"
+        android:onClick="abrirDialogInfoInvisivel"
+        android:gravity="center_vertical"
+        >
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/ic_dialog_info"
+            android:tint="@color/colorAccent"
+            />
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/txt_pergunta_invisivel"
+            android:textColor="@color/colorAccent"
+            />
+
+    </LinearLayout>
+</LinearLayout>
 </LinearLayout>

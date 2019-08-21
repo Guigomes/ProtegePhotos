@@ -28,6 +28,7 @@ public class Utils {
                 .setAction("Action", null);
 
         snackbar.setTextColor(Color.WHITE);
+        snackbar.setBackgroundTint(Color.BLACK);
 
         snackbar.show();
     }

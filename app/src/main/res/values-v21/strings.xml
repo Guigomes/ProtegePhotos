@@ -8,5 +8,7 @@
     <string name="msg_sucesso_deletar_foto">Foto deletada</string>
     <string name="msg_excluir_fotos">Tem certeza que deseja excluir as %1$s fotos selecionadas?</string>
     <string name="msg_excluir_foto">Tem certeza que deseja excluir a foto  %1$s?</string>
+    <string name="title_criar_nova_pasta">Criar nova pasta</string>
+    <string name="txt_visibilidade_pasta">Qual será a visibilidade da pasta?</string>
 
 </resources>

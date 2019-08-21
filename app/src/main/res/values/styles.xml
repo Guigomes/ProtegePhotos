@@ -12,10 +12,26 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorOnSurface">@color/colorSurface</item>
+        <item name="colorSurface">@color/colorSurface</item>
+
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColor">@android:color/black</item>
-    </style>
+        <item name="actionBarTheme">@style/MyActionBar</item>
 
+        <item name="android:statusBarColor">@android:color/black</item>
+
+
+
+    </style>
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
 
     <style name="Base.PatternView" parent="">
         <item name="pl_rowCount">3</item>
@@ -53,4 +69,12 @@
 
     <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <style name="MyActionBar" parent="@style/ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="android:background">#fff</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+
+
+
+    </style>
 </resources>
