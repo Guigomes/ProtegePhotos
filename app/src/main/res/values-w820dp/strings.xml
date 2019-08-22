@@ -9,5 +9,7 @@
     <string name="msg_excluir_fotos">Tem certeza que deseja excluir as %1$s fotos selecionadas?</string>
     <string name="title_criar_nova_pasta">Criar nova pasta</string>
     <string name="txt_visibilidade_pasta">Qual será a visibilidade da pasta?</string>
+    <string name="btn_novas_fotos">Proteger novas fotos</string>
+    <string name="txt_msg_demorar">Isso pode demorar um pouco</string>
 
 </resources>

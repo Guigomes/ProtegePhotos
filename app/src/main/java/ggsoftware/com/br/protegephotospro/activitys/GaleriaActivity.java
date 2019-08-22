@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -89,7 +90,7 @@ public class GaleriaActivity extends AppCompatActivity {
     PastaDAO pastaDAO;
     private long downloadID;
 
-    android.app.AlertDialog dialog;
+    androidx.appcompat.app.AlertDialog dialog;
      boolean isNovaPastaVisivel = true;
 
     @Override
@@ -113,7 +114,7 @@ public class GaleriaActivity extends AppCompatActivity {
 
         } else {
 
-            Toast.makeText(getApplicationContext(), "Erro aco encontrar pasta", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Erro ao encontrar pasta", Toast.LENGTH_LONG).show();
 
         }
 
@@ -131,8 +132,10 @@ public class GaleriaActivity extends AppCompatActivity {
         listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
 
         if (listaImagens.size() == 0) {
+            ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.VISIBLE);
         } else {
+            ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.GONE);
             ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.GONE);
         }
         adapter = new ImageGalleryAdapter(this, Foto.getSpacePhotos(listaImagens));
@@ -155,6 +158,18 @@ public class GaleriaActivity extends AppCompatActivity {
     }
 
 
+    public void upload(View v){
+        android.app.AlertDialog.Builder dialogPrimeiroUpload =  new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
+
+        dialogPrimeiroUpload.setTitle(R.string.msg_title_proteger_fotos)
+                .setMessage(getString(R.string.msg_proteger_fotos))
+                .setPositiveButton(getString(R.string.btn_entendi), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        addImagem(null);
+                    }
+                }).show();
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -168,7 +183,7 @@ public class GaleriaActivity extends AppCompatActivity {
 
                 break;
             case R.id.action_add_imagem:
-                addImagem();
+                addImagem(null);
                 break;
             case R.id.action_excluir_imagem:
                 abrirDialogExcluirFotos();
@@ -391,6 +406,8 @@ public class GaleriaActivity extends AppCompatActivity {
         cancelarSelecao();
 Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
         if(mFotos.isEmpty()){
+
+                    ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.VISIBLE);
         }
 
@@ -639,7 +656,7 @@ excluirPasta();
     }
 
 
-    public void addImagem() {
+    public void addImagem(View v) {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -928,6 +945,7 @@ excluirPasta();
 
             if (result) {
                 ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.GONE);
+                ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.GONE);
                 listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
                 mFotos = Foto.getSpacePhotos(listaImagens);
 
@@ -977,6 +995,8 @@ excluirPasta();
         protected void onPostExecute(Boolean result) {
 
             ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.GONE);
+            ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.GONE);
+
             listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
 
             views = new ArrayList<>();
@@ -1021,18 +1041,27 @@ excluirPasta();
         textViewDialog.setText("0/" + quantidadeArquivosAnexados);
         progressBar = alertDialogView.findViewById(R.id.progressBar1);
         progressBar.setMax(quantidadeArquivosAnexados);
-        dialog = new android.app.AlertDialog.Builder(GaleriaActivity.this)
+
+
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(GaleriaActivity.this)
+                .setTitle(getString(R.string.msg_title_proteger_fotos))
                 .setView(alertDialogView)
-.setNegativeButton(R.string.btn_cancelar, new DialogInterface.OnClickListener() {
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        salvadorImagems.cancel(true);
-        salvadorImagems.onPostExecute(true);
-        dialog.dismiss();
-    }
-})
-                .setCancelable(false)
-                .create();
+                .setNegativeButton(R.string.btn_cancelar, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        salvadorImagems.cancel(true);
+                        salvadorImagems.onPostExecute(true);
+                        dialog.dismiss();
+                    }
+                });
+
+
+
+        dialog = builder.create();
+
         dialog.show();
+
+
     }
 }

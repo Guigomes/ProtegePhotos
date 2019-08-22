@@ -95,4 +95,8 @@
     <string name="texto_pasta_invisivel">uma pasta invisivel</string>
     <string name="btn_entendi">Entendi</string>
     <string name="title_alterar_dados_pasta">Alterar dados da pasta</string>
+    <string name="btn_novas_fotos">Proteger novas fotos</string>
+    <string name="msg_title_proteger_fotos">Protegendo suas fotos</string>
+    <string name="msg_proteger_fotos">Estamos protegendo suas fotos</string>
+    <string name="txt_msg_demorar">Isso pode demorar um pouco</string>
 </resources>
