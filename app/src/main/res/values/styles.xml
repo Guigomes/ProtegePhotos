@@ -33,6 +33,12 @@
 
     </style>
 
+    <style name="OverlayActionBar" parent="AppTheme">
+        <item name="windowActionBarOverlay">true</item>
+        <item name="actionBarTheme">@style/MyActionBarTransparent</item>
+
+    </style>
+
     <style name="myCustomMenuTextAppearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
         <item name="android:textColor">@android:color/black</item>
     </style>
@@ -86,6 +92,14 @@
     <style name="MyActionBar" parent="@style/ThemeOverlay.MaterialComponents.ActionBar">
         <item name="android:background">#fff</item>
         <item name="android:textColor">@color/colorPrimary</item>
+
+
+
+    </style>
+
+    <style name="MyActionBarTransparent" parent="@style/ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="colorPrimary">@android:color/transparent</item>
 
 
 

@@ -39,7 +39,9 @@
             android:label="@string/title_activity_galeria" />
         <activity
             android:name=".activitys.FotoActivity"
-            android:label=""></activity>
+            android:label=""
+            android:theme="@style/OverlayActionBar"
+            ></activity>
         <activity android:name=".activitys.GaleriaActivity" />
         <activity
             android:name=".activitys.EscolherPastaActivity"

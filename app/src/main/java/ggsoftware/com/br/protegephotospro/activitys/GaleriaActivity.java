@@ -70,7 +70,7 @@ public class GaleriaActivity extends AppCompatActivity {
     PastaVO pastaSelecionada;
     List<ImagemVO> listaImagens;
     ImageDAO imagemDAO;
-    SalvarImagens salvadorImagems;
+    SalvarImagens2 salvadorImagems;
 
     private List<Foto> mFotos;
     private Context mContext;
@@ -99,7 +99,7 @@ public class GaleriaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_glide);
         pastaDAO = new PastaDAO(GaleriaActivity.this);
         progressBarCircular = (findViewById(R.id.progressBarCircular));
-        salvadorImagems = new SalvarImagens();
+
         Bundle extras = getIntent().getExtras();
      //    root  =(RelativeLayout) findViewById(R.id.galeria_root);
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
@@ -121,6 +121,12 @@ public class GaleriaActivity extends AppCompatActivity {
         setTitle(pastaSelecionada.getNomePasta());
 
 
+
+        listarPatas();
+
+    }
+
+    public  void listarPatas(){
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 4);
         recyclerView = (RecyclerView) findViewById(R.id.rv_images);
         recyclerView.setHasFixedSize(true);
@@ -142,8 +148,6 @@ public class GaleriaActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         registerForContextMenu(recyclerView);
-
-
     }
 
     @Override
@@ -157,6 +161,11 @@ public class GaleriaActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listarPatas();
+    }
 
     public void upload(View v){
         android.app.AlertDialog.Builder dialogPrimeiroUpload =  new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
@@ -657,6 +666,7 @@ excluirPasta();
 
 
     public void addImagem(View v) {
+        salvadorImagems = new SalvarImagens2();
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -959,6 +969,7 @@ excluirPasta();
         }
     }
 
+
     private class SalvarImagens extends AsyncTask<ClipData, Void, Boolean> {
         protected Boolean doInBackground(ClipData... clipdatas) {
 
@@ -1012,6 +1023,67 @@ excluirPasta();
 
 
     }
+
+    private class SalvarImagens2 extends AsyncTask<ClipData, Void, ClipData[]> {
+        protected ClipData[] doInBackground(ClipData... clipdatas) {
+
+            ClipData clipData = clipdatas[0];
+
+
+            ClipData.Item item = clipData.getItemAt(progress);
+            Uri uri = item.getUri();
+
+            try {
+                String filename = queryName(getContentResolver(), uri);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(GaleriaActivity.this.getContentResolver(), uri);
+
+
+                ImageSaver imageSaver = new ImageSaver(GaleriaActivity.this);
+                ImageDAO imageDAO = new ImageDAO(GaleriaActivity.this);
+                imageSaver.save(bitmap, filename);
+                imageDAO.insereDado(filename, pastaSelecionada.getNomePasta());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                return clipdatas;
+            }
+
+
+
+            return clipdatas;
+        }
+
+
+        protected void onPostExecute(ClipData[] clipData) {
+
+            progress++;
+            progressBar.setProgress(progress, true);
+            textViewDialog.setText(progress + "/" + quantidadeArquivos);
+            if(progress <  quantidadeArquivos){
+
+                new SalvarImagens2().execute(clipData);
+
+            }else {
+
+                ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.GONE);
+                ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.GONE);
+
+                listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
+
+                views = new ArrayList<>();
+                ImageGalleryAdapter adapter = new ImageGalleryAdapter(GaleriaActivity.this, Foto.getSpacePhotos(listaImagens));
+
+
+                mFotos = Foto.getSpacePhotos(listaImagens);
+                recyclerView.setAdapter(adapter);
+                dialog.dismiss();
+            }
+
+        }
+
+
+    }
     public void abrirDialogInfoInvisivel(View v){
         final androidx.appcompat.app.AlertDialog dialog;
 
@@ -1032,7 +1104,7 @@ excluirPasta();
 
         dialog.show();
     }
-    private void showProgressDialog(int quantidadeArquivosAnexados){
+    private void showProgressDialog(final int quantidadeArquivosAnexados){
 
         quantidadeArquivos = quantidadeArquivosAnexados;
         final View alertDialogView = LayoutInflater.from(GaleriaActivity.this).inflate
@@ -1051,7 +1123,8 @@ excluirPasta();
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         salvadorImagems.cancel(true);
-                        salvadorImagems.onPostExecute(true);
+                        progress = quantidadeArquivos;
+                        salvadorImagems.onPostExecute(null);
                         dialog.dismiss();
                     }
                 });

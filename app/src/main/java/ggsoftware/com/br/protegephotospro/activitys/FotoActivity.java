@@ -2,12 +2,22 @@ package ggsoftware.com.br.protegephotospro.activitys;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,54 +49,83 @@ import ggsoftware.com.br.protegephotospro.utils.Utils;
 public class FotoActivity extends AppCompatActivity {
 
     public static final String EXTRA_SPACE_PHOTO = "FotoActivity.SPACE_PHOTO";
-    private PhotoView mImageView;
 
+    ImageSwitcher myImageSwitcher;
     Foto foto;
     File file;
-
+    PhotoView mImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+
         setContentView(R.layout.activity_space_photo);
 
-        mImageView = (PhotoView) findViewById(R.id.image);
+//getSupportActionBar().setShowHideAnimationEnabled(true);
+        myImageSwitcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
 
-        mImageView.setOnSwipeRight(new OnSwipeRightListener() {
+        myImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
-            public void onSwipeRight() {
-                fotoAnterior();
+            public View makeView() {
+                 mImageView = new PhotoView(getApplicationContext());
+                mImageView.setLayoutParams(new ImageSwitcher.LayoutParams(
+                        android.app.ActionBar.LayoutParams.FILL_PARENT, android.app.ActionBar.LayoutParams.FILL_PARENT
+                ));
 
+                foto = getIntent().getParcelableExtra(EXTRA_SPACE_PHOTO);
+
+                ImageSaver imageSaver = new ImageSaver(FotoActivity.this);
+                file = imageSaver.loadFile(foto.getTitle());
+                //myImageSwitcher.setImageURI(Uri.fromFile(file));
+
+                mImageView.setImageURI(Uri.fromFile(file));
+
+/*
+                Glide.with(FotoActivity.this)
+                        .load(file.getAbsolutePath())
+                        .asBitmap()
+                        .error(android.R.drawable.ic_delete)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(mImageView);
+*/
+                mImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+
+
+                mImageView.setOnSwipeRight(new OnSwipeRightListener() {
+                    @Override
+                    public void onSwipeRight() {
+                        fotoAnterior();
+
+                    }
+                });
+
+                mImageView.setOnToogleActionBar(new OnToogleActionBar() {
+                    @Override
+                    public void toogleActionBar() {
+                        toggleActionBar();
+
+                    }
+                });
+
+                mImageView.setOnSwipeLeft(new OnSwipeLeftListener() {
+
+                    @Override
+                    public void onSwipeLeft() {
+                        proximaFoto();
+                    }
+                });
+                //switcherImageView.setMaxHeight(100);
+                return mImageView;
             }
         });
 
-        mImageView.setOnToogleActionBar(new OnToogleActionBar() {
-            @Override
-            public void toogleActionBar() {
-                toggleActionBar();
+/*
+        Animation animationOut = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right);
+        Animation animationIn = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
 
-            }
-        });
-
-        mImageView.setOnSwipeLeft(new OnSwipeLeftListener() {
-
-            @Override
-            public void onSwipeLeft() {
-                proximaFoto();
-            }
-        });
-        foto = getIntent().getParcelableExtra(EXTRA_SPACE_PHOTO);
-
-        ImageSaver imageSaver = new ImageSaver(FotoActivity.this);
-        file = imageSaver.loadFile(foto.getTitle());
-
-
-        Glide.with(this)
-                .load(file.getAbsolutePath())
-                .asBitmap()
-                .error(android.R.drawable.ic_delete)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(mImageView);
-
+        myImageSwitcher.setOutAnimation(animationOut);
+        myImageSwitcher.setInAnimation(animationIn);*/
     }
 
 
@@ -103,6 +142,11 @@ public class FotoActivity extends AppCompatActivity {
     }
 
     public void fotoAnterior() {
+        Animation animationOut = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right);
+        Animation animationIn = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
+
+        myImageSwitcher.setOutAnimation(animationOut);
+        myImageSwitcher.setInAnimation(animationIn);
         List<Foto> fotos = Foto.getFotos();
         for (int i = 0; i < fotos.size(); i++) {
             if (fotos.get(i).getId() == foto.getId()) {
@@ -111,15 +155,16 @@ public class FotoActivity extends AppCompatActivity {
 
                     ImageSaver imageSaver = new ImageSaver(FotoActivity.this);
                     File file = imageSaver.loadFile(foto.getTitle());
+                    myImageSwitcher.setImageURI(Uri.fromFile(file));
 
-
+/*
                     Glide.with(this)
                             .load(file.getAbsolutePath())
                             .asBitmap()
                             .error(android.R.drawable.ic_delete)
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                             .into(mImageView);
-
+*/
                     break;
                 }
             }
@@ -255,9 +300,19 @@ public class FotoActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_foto, menu);
+        Drawable drawable = menu.findItem(R.id.action_share).getIcon();
+        if (drawable != null) {
+            drawable.mutate();
+            drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        }
         return true;
     }
     public void proximaFoto() {
+        Animation animationOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_left);
+        Animation animationIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
+
+        myImageSwitcher.setOutAnimation(animationOut);
+        myImageSwitcher.setInAnimation(animationIn);
         List<Foto> fotos = Foto.getFotos();
         for (int i = 0; i < fotos.size(); i++) {
             if (fotos.get(i).getId() == foto.getId()) {
@@ -267,14 +322,16 @@ public class FotoActivity extends AppCompatActivity {
                     ImageSaver imageSaver = new ImageSaver(FotoActivity.this);
                     File file = imageSaver.loadFile(foto.getTitle());
 
+                    myImageSwitcher.setImageURI(Uri.fromFile(file));
 
+/*
                     Glide.with(this)
                             .load(file.getAbsolutePath())
                             .asBitmap()
                             .error(android.R.drawable.ic_delete)
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                             .into(mImageView);
-
+*/
                     break;
                 }
             }

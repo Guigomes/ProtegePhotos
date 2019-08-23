@@ -7,14 +7,14 @@
     android:layout_gravity="center_vertical"
     android:orientation="vertical">
 
+    <ImageSwitcher
+        android:id="@+id/imageSwitcher"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 
 
-            <ggsoftware.com.br.protegephotospro.components.photoview.PhotoView
-                android:id="@+id/image"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-            />
 
 
 

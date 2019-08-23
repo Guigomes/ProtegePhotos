@@ -1,18 +1,12 @@
 package ggsoftware.com.br.protegephotospro.activitys;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
-import android.widget.Toast;
-
 import java.util.List;
 
-import ggsoftware.com.br.protegephotospro.Constantes;
 import ggsoftware.com.br.protegephotospro.dao.PastaDAO;
 import ggsoftware.com.br.protegephotospro.dao.PastaVO;
 
