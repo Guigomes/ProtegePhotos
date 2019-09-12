@@ -42,7 +42,7 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rdb_visivel"
+            android:text="@string/btn_rdb_visivel"
             android:checked="true"
             android:id="@+id/rdb_visivel"
             android:onClick="onRadioButtonClicked"
@@ -51,7 +51,7 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rdb_invisivel"
+            android:text="@string/btn_rdb_invisivel"
             android:id="@+id/rdb_invisivel"
             android:onClick="onRadioButtonClicked"
             />

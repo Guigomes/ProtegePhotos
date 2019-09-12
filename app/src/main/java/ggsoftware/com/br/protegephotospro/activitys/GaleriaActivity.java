@@ -1089,7 +1089,7 @@ excluirPasta();
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(GaleriaActivity.this)
                 .setTitle(getString(R.string.title_criar_nova_pasta_informacoes))
-                .setMessage(getString(R.string.texto_pasta_invisivel))
+                .setMessage(getString(R.string.txt_pasta_invisivel))
                 .setPositiveButton(R.string.btn_entendi, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
