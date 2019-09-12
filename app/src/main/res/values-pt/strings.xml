@@ -11,6 +11,7 @@
     <string name="title_criar_nova_pasta">Criar nova pasta</string>
     <string name="title_criar_nova_pasta_informacoes">O que é uma pasta invísivel?</string>
     <string name="title_alterar_dados_pasta">Alterar dados da pasta</string>
+    <string name="title_alterar_nome_pasta">Alterar nome da pasta</string>
 
 
     <!-- Botões -->
@@ -60,6 +61,8 @@
     <string name="msg_excluir_foto">Tem certeza que deseja excluir a foto %1$s?</string>
     <string name="msg_sucesso_alterar_senha">Senha alterada com sucesso</string>
     <string name="msg_sucesso_criar_pasta">Pasta criada com sucesso</string>
+    <string name="msg_pasta_sem_fotos">Você não possui nenhuma foto nessa pasta</string>
+    <string name="msg_arquivos_nao_selecionados">Selecione as fotos primeiro</string>
 
 
     <!-- Frases Pattern -->
@@ -87,7 +90,7 @@
 
     <!-- Actions -->
     <string name="action_settings">Configurações</string>
-
+    <string name="action_nova_pasta">Nova pasta</string>
 
     <!-- Textos -->
 

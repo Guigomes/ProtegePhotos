@@ -183,7 +183,13 @@ public class GaleriaActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+            case R.id.action_download_imagem:
 
+
+                abrirDialogExportarFotos();
+
+
+                break;
             case R.id.action_selecionar_todos:
                 selecionarTodos();
                 break;
@@ -214,19 +220,7 @@ public class GaleriaActivity extends AppCompatActivity {
 
                 break;
 
-            case R.id.action_download_imagem:
 
-                    int permissionCheck = ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            1);
-
-                    abrirDialogExportarFotos();
-
-
-                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -264,9 +258,9 @@ public class GaleriaActivity extends AppCompatActivity {
 
         final EditText edtNomeAlterarPasta = alertDialogView.findViewById(R.id.edtNomeAlterarPasta);
 
-        final RadioButton rdbVisivel = alertDialogView.findViewById(R.id.rdb_visivel);
+        final RadioButton rdbVisivel = alertDialogView.findViewById(R.id.btn_rdb_visivel);
 
-        RadioButton rdbInvisivel = alertDialogView.findViewById(R.id.rdb_invisivel);
+        RadioButton rdbInvisivel = alertDialogView.findViewById(R.id.btn_rdb_invisivel);
 
 
         if(pastaSelecionada.getInvisivel() == 0){
@@ -334,6 +328,7 @@ public class GaleriaActivity extends AppCompatActivity {
         for (File file :
                 files) {
              salvo = Utils.writeFileExternalStorage(GaleriaActivity.this, file);
+
             if(!salvo){
                 break;
             }
@@ -554,8 +549,12 @@ excluirPasta();
         android.app.AlertDialog.Builder dialogExcluir =  new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
 
         String  mensagemExportarFotos = "";
+int sizeFilesSelected = getFilesSelected().size();
+if(sizeFilesSelected == 0){
+    Utils.notificar(recyclerView, getString(R.string.msg_arquivos_nao_selecionados));
 
-        if(getFilesSelected().size() == 1){
+}
+    else    if(sizeFilesSelected == 1){
             String nomeFotoSelecionada = "";
             for (Foto foto : mFotos) {
 
@@ -578,11 +577,13 @@ excluirPasta();
                 .setPositiveButton(getString(R.string.btn_exportar), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         try {
                             downloadImage();
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
+
                     }
                 }).setNegativeButton(getString(R.string.btn_cancelar), new DialogInterface.OnClickListener() {
             @Override

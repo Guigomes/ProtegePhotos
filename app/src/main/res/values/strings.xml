@@ -16,7 +16,7 @@
     <string name="title_criar_nova_pasta">Criar nova pasta</string>
     <string name="title_criar_nova_pasta_informacoes">What is an invisible folder?</string>
     <string name="title_activity_galeria">Create new folder</string>
-
+    <string name="title_alterar_nome_pasta">Change Folder Name</string>
     <!-- Botões -->
 
 
@@ -32,7 +32,7 @@
     <string name="btn_exportar">Export</string>
     <string name="btn_excluir">Delete</string>
     <string name="btn_configurar_pasta">Set up folder</string>
-    <string name="btn_alterar_dados_pasta">Change folder</string>
+    <string name="btn_alterar_dados_pasta">Change folder data</string>
 
     <string name="btn_rdb_visivel">Visible</string>
     <string name="btn_rdb_invisivel">Invisible</string>
@@ -60,13 +60,15 @@
     <string name="msg_excluir_fotos_sucesso">Photos deleted successfully</string>
     <string name="msg_title_exportar_foto">Export photo</string>
     <string name="msg_exportar_fotos">Do you want to export the %1$s selected photos to your phone? They will no longer be protected.</string>
-    <string name="msg_exportar_foto">Want to export the %1$s photo to your phone. She will no longer be protected</string>
+    <string name="msg_exportar_foto">Want to export the %1$s photo to your phone. It will no longer be protected</string>
     <string name="msg_excluir_foto">Are you sure you want to delete the  %1$s photo?</string>
     <string name="msg_title_proteger_fotos">Protecting your photos</string>
     <string name="msg_proteger_fotos">We are protecting your photos</string>
     <string name="msg_confirmar_padrao_invisivel">Draw the pattern of the folder you want to access</string>
     <string name="msg_title_exportar_fotos">Export photos</string>
     <string name="msg_title_excluir_pasta">Delete Folder</string>
+    <string name="msg_pasta_sem_fotos">You do not have any photos in this folder</string>
+    <string name="msg_arquivos_nao_selecionados">Select photos first</string>
 
 
 
@@ -96,6 +98,7 @@
 
     <!-- ACTIONS -->
     <string name="action_settings">Settings</string>
+    <string name="action_nova_pasta">New folder</string>
 
 
     <!-- TEXTOS -->
@@ -108,9 +111,6 @@
     <string name="txt_msg_demorar">Isso pode demorar um pouco</string>
     <string name="txt_visibilidade_pasta">What will be the visibility of the folder?</string>
     <string name="txt_pasta_principal">Main</string>
-
-
-
 
 
 </resources>
