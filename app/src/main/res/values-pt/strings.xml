@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+
+    <string name="msg_padrao_alterar">Crie um novo padrão para a pasta %1$s</string>
+
+    <string name="pl_draw_pattern_to_unlock">Desenhe o padrão para desbloquear</string>
+    <string name="pl_forgot_pattern">Esqueci padrão</string>
+    <string name="pl_pattern_confirmed">Novo padrão gravado com sucesso</string>
+    <string name="pl_pattern_recorded">Padrão gravado</string>
+    <string name="pl_pattern_too_short">Ligue pelo menos %d pontos, tente novamente</string>
+    <string name="pl_recording_pattern">Solte o dedo quando terminar</string>
+    <string name="pl_redraw">Desenhar novamente</string>
+    <string name="pl_wrong_pattern">Padrão incorreto, tente novamente</string>
+    <string name="pl_access_pattern_start">Pattern started</string>
+    <string name="pl_access_pattern_cleared">Pattern cleared</string>
+    <string name="pl_access_pattern_cell_added">Cell added</string>
+    <string name="pl_access_pattern_cell_added_verbose">Cell <xliff:g example="3" id="cell_index">%1$d</xliff:g> added</string>
+    <string name="pl_access_pattern_detected">Pattern completed</string>
+    <string name="pl_access_pattern_area">Pattern area.</string>
+
+    <string name="app_name">Protege Fotos</string>
+    <string name="title_activity_galeria">Criar nova pasta</string>
+
+    <string name="action_settings">Configurações</string>
+    <string name="title_activity_escolher_pasta">Minhas pastas</string>
+    <string name="msg_pasta_repetida">Você já tem uma pasta com esse nome</string>
+    <string name="msg_pasta_nao_existe">Pasta não pôde ser encontrada</string>
+
+    <string name="msg_confirmar_padrao_invisivel">Desenhe o padrão da pasta que deseja acessar</string>
+    <string name="btn_alterar_nome_pasta">Alterar nome da pasta</string>
+    <string name="btn_excluir_pasta">Excluir Pasta</string>
+    <string name="txt_informe_nome_novo_pasta">Informe o novo nome da pasta</string>
+    <string name="msg_sucesso_alterar_nome_pasta">Dados da pasta alterados com sucesso</string>
+    <string name="msg_sucesso_deletar_pasta">Pasta deletada com sucesso</string>
+    <string name="msg_pastas_iguais">Escolha a pasta desejada</string>
+    <string name="msg_erro_criar_pasta_sem_nome">Por favor, informe o nome da sua pasta</string>
+    <string name="rdb_visivel">Visível</string>
+    <string name="rdb_invisivel">Invisível</string>
+    <string name="txt_protegendo_fotos">Protegendo suas fotos</string>
+    <string name="msg_download_sucesso">Fotos copiadas para a pasta Downloads</string>
+    <string name="msg_download_sucesso_2">Foto copiada para a pasta Downloads/%1$s</string>
+    <string name="msg_download_erro">Erro ao exportar fotos</string>
+
+    <string name="btn_configurar_pasta">Configurar pasta</string>
+    <string name="btn_alterar_dados_pasta">Alterar pasta</string>
+    <string name="msg_sucesso_deletar_foto">Foto deletada</string>
+    <string name="btn_excluir">Excluir</string>
+    <string name="msg_excluir_pasta">Tem certeza que deseja excluir a pasta %1$s e todas as fotos dela?</string>
+    <string name="msg_title_excluir_pasta">Excluir pasta</string>
+    <string name="msg_title_excluir_fotos">Excluir fotos</string>
+
+    <string name="msg_excluir_fotos">Tem certeza que deseja excluir as %1$s fotos selecionadas?</string>
+    <string name="msg_excluir_fotos_sucesso">Fotos deletadas com sucesso</string>
+    <string name="msg_title_exportar_fotos">Exportar fotos</string>
+    <string name="msg_title_exportar_foto">Exportar foto</string>
+    <string name="msg_exportar_fotos">Deseja exportar as %1$s fotos selecionadas para seu celular? Elas não estarão mais protegidas.</string>
+    <string name="msg_exportar_foto">Deseja exportar a foto %1$s para seu celular. Ela não estará mais protegida</string>
+    <string name="btn_exportar">Exportar</string>
+    <string name="btn_selecionar_todos">Selecionar Todos</string>
+    <string name="txt_pergunta_invisivel">O que é uma pasta invisível?</string>
+    <string name="title_criar_nova_pasta">Criar nova pasta</string>
+    <string name="txt_visibilidade_pasta">Qual será a visibilidade da pasta?</string>
+    <string name="title_criar_nova_pasta_informacoes">O que é uma pasta invísivel?</string>
+    <string name="texto_pasta_invisivel">uma pasta invisivel</string>
+    <string name="btn_entendi">Entendi</string>
+    <string name="title_alterar_dados_pasta">Alterar dados da pasta</string>
+    <string name="btn_novas_fotos">Proteger novas fotos</string>
+    <string name="msg_title_proteger_fotos">Protegendo suas fotos</string>
+    <string name="msg_proteger_fotos">Estamos protegendo suas fotos</string>
+    <string name="txt_msg_demorar">Isso pode demorar um pouco</string>
+    <string name="btn_alterar_senha">Alterar senha</string>
+    <string name="btn_cancelar">Cancelar</string>
+    <string name="btn_cancelar_selecao">Cancelar seleção</string>
+    <string name="btn_criar_pasta">Criar pasta</string>
+    <string name="msg_confirmar_padrao">Desenhe o padrão para acessar a pasta  %1$s</string>
+    <string name="msg_erro_alterar_senha">Erro ao alterar senha. Contate o Desenvolvedor</string>
+    <string name="msg_erro_criar_pasta">Erro ao criar pasta. Contate o desenvolvedor</string>
+    <string name="msg_excluir_foto">Tem certeza que deseja excluir a foto %1$s?</string>
+    <string name="txt_pasta_principal">Principal</string>
+    <string name="txt_informe_nome_pasta">Informe o nome da pasta</string>
+    <string name="pl_cancel">Cancelar</string>
+    <string name="pl_confirm">Confirmar</string>
+    <string name="pl_confirm_pattern">Desenhe o padrão novamente para confirmar</string>
+    <string name="pl_continue">Continuar</string>
+    <string name="pl_draw_pattern">Criar um padrão para a pasta  %1$s</string>
+    <string name="msg_sucesso_alterar_senha">Senha alterada com sucesso</string>
+    <string name="msg_sucesso_criar_pasta">Pasta criada com sucesso</string>
+</resources>

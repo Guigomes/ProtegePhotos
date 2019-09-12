@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="msg_confirmar_padrao_invisivel">Desenhe o padrão da pasta que deseja acessar</string>
-    <string name="btn_alterar_nome_pasta">Alterar nome da pasta</string>
-    <string name="txt_informe_nome_novo_pasta">Informe o novo nome da pasta</string>
-    <string name="txt_protegendo_fotos">Protegendo suas fotos</string>
-    <string name="btn_alterar_dados_pasta">Alterar pasta</string>
-    <string name="msg_sucesso_deletar_foto">Foto deletada</string>
-    <string name="msg_excluir_fotos">Tem certeza que deseja excluir as %1$s fotos selecionadas?</string>
-    <string name="msg_excluir_foto">Tem certeza que deseja excluir a foto  %1$s?</string>
-    <string name="title_criar_nova_pasta">Criar nova pasta</string>
+    <string name="msg_confirmar_padrao_invisivel">Draw the pattern of the folder you want to access</string>
+    <string name="btn_alterar_nome_pasta">Change folder name</string>
+    <string name="txt_informe_nome_novo_pasta">Enter new folder name</string>
+    <string name="txt_protegendo_fotos">Protecting your photos</string>
+    <string name="btn_alterar_dados_pasta">Change folder</string>
+    <string name="msg_sucesso_deletar_foto">the photo has been deleted</string>
+    <string name="msg_excluir_fotos">Are you sure you want to delete the %1$s selected photos?</string>
+    <string name="title_criar_nova_pasta">Create new folder</string>
     <string name="txt_visibilidade_pasta">Qual será a visibilidade da pasta?</string>
-    <string name="btn_novas_fotos">Proteger novas fotos</string>
-    <string name="txt_msg_demorar">Isso pode demorar um pouco</string>
+    <string name="txt_msg_demorar">This may take a while</string>
 
 </resources>
