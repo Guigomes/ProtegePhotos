@@ -128,7 +128,7 @@ public class EscolherPastaActivity extends AppCompatActivity {
             for (PastaVO pasta :
                     pastas) {
 
-                if (padrao.equals(pasta.getSenhaPasta())) {
+                if (padrao.equals(pasta.getSenhaPasta()) && !pasta.getNomePasta().equalsIgnoreCase(pastaSelecionada.getNomePasta())) {
                     nomePastas.add(pasta.getNomePasta());
 
                 }

@@ -54,7 +54,7 @@ public class ConfirmarPadraoActivity extends ConfirmPatternActivity {
 
         for (PastaVO pasta :
                 pastasInvisiveis) {
-            if (padrao.equals(pasta.getSenhaPasta())) {
+            if (padrao.equals(pasta.getSenhaPasta()) && !pasta.getNomePasta().equalsIgnoreCase(pastaSelecionada.getNomePasta())) {
 
                 contPastasMesmasSenha++;
                 pastasMesmaSenha.add(pasta);
