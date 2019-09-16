@@ -55,7 +55,10 @@
     <string name="msg_exportar_fotos">Deseja exportar as %1$s fotos selecionadas para seu celular? Elas não estarão mais protegidas.</string>
     <string name="msg_exportar_foto">Deseja exportar a foto %1$s para seu celular. Ela não estará mais protegida</string>
     <string name="msg_title_proteger_fotos">Protegendo suas fotos</string>
-    <string name="msg_proteger_fotos">Estamos protegendo suas fotos</string>
+
+    <string name="msg_proteger_fotos">Ao importar fotos para o aplicativo, elas NÃO serão excluídas do local de origem. Para aumentar sua segurança, mantenha as fotos que deseja proteger somente no aplicativo. Você pode exporta-las de volta para o seu celulhar a qualquer momento.</string>
+
+
     <string name="msg_confirmar_padrao">Desenhe o padrão para acessar a pasta  %1$s</string>
     <string name="msg_erro_alterar_senha">Erro ao alterar senha. Contate o Desenvolvedor</string>
     <string name="msg_erro_criar_pasta">Erro ao criar pasta. Contate o desenvolvedor</string>
@@ -96,7 +99,7 @@
     <!-- Textos -->
 
     <string name="txt_informe_nome_novo_pasta">Informe o novo nome da pasta</string>
-    <string name="txt_protegendo_fotos">Ao importar fotos para o aplicativo, elas NÃO serão excluídas do local de origem. Para aumentar sua segurança, mantenha as fotos que deseja proteger somente no aplicativo. Você pode exporta-las de volta para o seu celulhar a qualquer momento.</string>
+
     <string name="txt_pergunta_invisivel">O que é uma pasta invisível?</string>
     <string name="txt_visibilidade_pasta">Qual será a visibilidade da pasta?</string>
     <string name="txt_pasta_invisivel">Uma pasta invisível não aparece na sua lista de pastas. Para abri-la você pode selecionar qualquer pasta visível e fazer o padrão da pasta invísivel. Se todas as suas pastas forem invisíveis, a primeira tela do aplicativo já pedirá a senha da pasta que deseja acessar, sem mostrar a lista de pastas disponíveis. Assim, você pode ter mais privacidade sobre quais pastas está protegendo.</string>
