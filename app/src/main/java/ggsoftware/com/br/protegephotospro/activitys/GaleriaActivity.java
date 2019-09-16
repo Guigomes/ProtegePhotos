@@ -35,6 +35,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
@@ -91,7 +92,7 @@ public class GaleriaActivity extends AppCompatActivity {
     private long downloadID;
 
     androidx.appcompat.app.AlertDialog dialog;
-     boolean isNovaPastaVisivel = true;
+    boolean isNovaPastaVisivel = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,7 @@ public class GaleriaActivity extends AppCompatActivity {
         progressBarCircular = (findViewById(R.id.progressBarCircular));
 
         Bundle extras = getIntent().getExtras();
-     //    root  =(RelativeLayout) findViewById(R.id.galeria_root);
+        //    root  =(RelativeLayout) findViewById(R.id.galeria_root);
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         String nomePasta = null;
@@ -121,12 +122,11 @@ public class GaleriaActivity extends AppCompatActivity {
         setTitle(pastaSelecionada.getNomePasta());
 
 
-
         listarPatas();
 
     }
 
-    public  void listarPatas(){
+    public void listarPatas() {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 4);
         recyclerView = (RecyclerView) findViewById(R.id.rv_images);
         recyclerView.setHasFixedSize(true);
@@ -135,7 +135,7 @@ public class GaleriaActivity extends AppCompatActivity {
         imagemDAO = new ImageDAO(GaleriaActivity.this);
 
 
-        listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
+        listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getTimestampCriacaoPasta());
 
         if (listaImagens.size() == 0) {
             ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.VISIBLE);
@@ -167,8 +167,8 @@ public class GaleriaActivity extends AppCompatActivity {
         listarPatas();
     }
 
-    public void upload(View v){
-        android.app.AlertDialog.Builder dialogPrimeiroUpload =  new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
+    public void upload(View v) {
+        android.app.AlertDialog.Builder dialogPrimeiroUpload = new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
 
         dialogPrimeiroUpload.setTitle(R.string.msg_title_proteger_fotos)
                 .setMessage(getString(R.string.msg_proteger_fotos))
@@ -179,6 +179,7 @@ public class GaleriaActivity extends AppCompatActivity {
                     }
                 }).show();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -263,9 +264,9 @@ public class GaleriaActivity extends AppCompatActivity {
         RadioButton rdbInvisivel = alertDialogView.findViewById(R.id.btn_rdb_invisivel);
 
 
-        if(pastaSelecionada.getInvisivel() == 0){
+        if (pastaSelecionada.getInvisivel() == 0) {
             rdbVisivel.setChecked(true);
-        }else{
+        } else {
             rdbInvisivel.setChecked(true);
         }
         edtNomeAlterarPasta.setText(pastaSelecionada.getNomePasta());
@@ -282,7 +283,7 @@ public class GaleriaActivity extends AppCompatActivity {
 
                         String novoNomePasta = edtNomeAlterarPasta.getText().toString();
 
-                        if(!novoNomePasta.equalsIgnoreCase(pastaSelecionada.getNomePasta())){
+                        if (!novoNomePasta.equalsIgnoreCase(pastaSelecionada.getNomePasta())) {
                             pastaSelecionada.setNomePasta(novoNomePasta);
                             pastaAlterada = true;
                         }
@@ -291,14 +292,13 @@ public class GaleriaActivity extends AppCompatActivity {
 
                         boolean isVisivel = pastaSelecionada.getInvisivel() == 0;
 
-                        if(!isVisivel == novoIsVisivel){
+                        if (!isVisivel == novoIsVisivel) {
                             pastaSelecionada.setInvisivel(novoIsVisivel ? 0 : 1);
                             pastaAlterada = true;
                         }
 
 
-
-                        if(pastaAlterada) {
+                        if (pastaAlterada) {
                             pastaDAO.updatePasta(pastaSelecionada);
 
                             setTitle(pastaSelecionada.getNomePasta());
@@ -320,25 +320,24 @@ public class GaleriaActivity extends AppCompatActivity {
     }
 
 
-
     private void downloadImage() throws FileNotFoundException {
 
         boolean salvo = false;
         List<File> files = getFilesSelected();
         for (File file :
                 files) {
-             salvo = Utils.writeFileExternalStorage(GaleriaActivity.this, file);
+            salvo = Utils.writeFileExternalStorage(GaleriaActivity.this, file);
 
-            if(!salvo){
+            if (!salvo) {
                 break;
             }
         }
 
         cancelarSelecao();
-        if(salvo) {
-            Utils.notificar(recyclerView,getString(R.string.msg_download_sucesso_2, getString(R.string.app_name)));
+        if (salvo) {
+            Utils.notificar(recyclerView, getString(R.string.msg_download_sucesso_2, getString(R.string.app_name)));
 
-        }else{
+        } else {
             Utils.notificar(recyclerView, getString(R.string.msg_download_erro));
         }
 
@@ -384,9 +383,6 @@ public class GaleriaActivity extends AppCompatActivity {
     }
 
 
-
-
-
     private void excluirImagem() {
         int count = adapter.getItemCount();
         List<Foto> fotosAremover = new ArrayList<>();
@@ -408,10 +404,10 @@ public class GaleriaActivity extends AppCompatActivity {
         ImageGalleryAdapter adapter = new ImageGalleryAdapter(this, mFotos);
         recyclerView.setAdapter(adapter);
         cancelarSelecao();
-Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
-        if(mFotos.isEmpty()){
+        Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
+        if (mFotos.isEmpty()) {
 
-                    ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.VISIBLE);
+            ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.VISIBLE);
         }
 
@@ -424,9 +420,7 @@ Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
         share(files);
 
 
-
     }
-
 
 
     private void criarNovaPasta() {
@@ -441,7 +435,7 @@ Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
                 .setPositiveButton(R.string.btn_criar_pasta, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String    nomePasta = ((EditText) alertDialogView.findViewById(R.id.edtNomeNovaPasta)).getText().toString();
+                        String nomePasta = ((EditText) alertDialogView.findViewById(R.id.edtNomeNovaPasta)).getText().toString();
 
 
                         if (nomePasta != null && !nomePasta.isEmpty()) {
@@ -455,7 +449,7 @@ Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
                             startActivity(it);
                             dialog.dismiss();
                         } else {
-                            Utils.notificar(recyclerView,getString( R.string.msg_erro_criar_pasta_sem_nome) );
+                            Utils.notificar(recyclerView, getString(R.string.msg_erro_criar_pasta_sem_nome));
 
                         }
                     }
@@ -474,7 +468,8 @@ Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
 
 
     }
-        private void alterarSenhaPasta() {
+
+    private void alterarSenhaPasta() {
         Intent it = new Intent(GaleriaActivity.this,
                 EscolherPadraoActivity.class);
 
@@ -491,17 +486,17 @@ Utils.notificar(recyclerView, getString(R.string.msg_excluir_fotos_sucesso));
 
     }
 
-    private void abrirDialogExcluirPasta(){
-        android.app.AlertDialog.Builder dialogExcluir =  new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
+    private void abrirDialogExcluirPasta() {
+        android.app.AlertDialog.Builder dialogExcluir = new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
 
         dialogExcluir.setTitle(R.string.msg_title_excluir_pasta)
-        .setMessage(getString(R.string.msg_excluir_pasta, pastaSelecionada.getNomePasta()))
-        .setPositiveButton(getString(R.string.btn_excluir), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-excluirPasta();
-            }
-        }).setNegativeButton(getString(R.string.btn_cancelar), new DialogInterface.OnClickListener() {
+                .setMessage(getString(R.string.msg_excluir_pasta, pastaSelecionada.getNomePasta()))
+                .setPositiveButton(getString(R.string.btn_excluir), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        excluirPasta();
+                    }
+                }).setNegativeButton(getString(R.string.btn_cancelar), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -511,11 +506,11 @@ excluirPasta();
     }
 
 
-    private void abrirDialogExcluirFotos(){
-        android.app.AlertDialog.Builder dialogExcluir =  new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
+    private void abrirDialogExcluirFotos() {
+        android.app.AlertDialog.Builder dialogExcluir = new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
 
         String mensagemExcluirFotos = "";
-        if(getFilesSelected().size() == 1){
+        if (getFilesSelected().size() == 1) {
             String nomeFotoSelecionada = "";
             for (Foto foto : mFotos) {
 
@@ -525,8 +520,8 @@ excluirPasta();
                 }
 
             }
-            mensagemExcluirFotos = getString(R.string.msg_excluir_foto, nomeFotoSelecionada );
-        }else{
+            mensagemExcluirFotos = getString(R.string.msg_excluir_foto, nomeFotoSelecionada);
+        } else {
             mensagemExcluirFotos = getString(R.string.msg_excluir_fotos, String.valueOf(getFilesSelected().size()));
         }
         dialogExcluir.setTitle(R.string.msg_title_excluir_fotos)
@@ -545,16 +540,15 @@ excluirPasta();
         }).show();
     }
 
-    private void abrirDialogExportarFotos(){
-        android.app.AlertDialog.Builder dialogExcluir =  new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
+    private void abrirDialogExportarFotos() {
+        android.app.AlertDialog.Builder dialogExcluir = new android.app.AlertDialog.Builder(new ContextThemeWrapper(GaleriaActivity.this, R.style.Dialog));
 
-        String  mensagemExportarFotos = "";
-int sizeFilesSelected = getFilesSelected().size();
-if(sizeFilesSelected == 0){
-    Utils.notificar(recyclerView, getString(R.string.msg_arquivos_nao_selecionados));
+        String mensagemExportarFotos = "";
+        int sizeFilesSelected = getFilesSelected().size();
+        if (sizeFilesSelected == 0) {
+            Utils.notificar(recyclerView, getString(R.string.msg_arquivos_nao_selecionados));
 
-}
-    else    if(sizeFilesSelected == 1){
+        } else if (sizeFilesSelected == 1) {
             String nomeFotoSelecionada = "";
             for (Foto foto : mFotos) {
 
@@ -564,13 +558,13 @@ if(sizeFilesSelected == 0){
                 }
 
             }
-            mensagemExportarFotos = getString(R.string.msg_exportar_foto,nomeFotoSelecionada);
+            mensagemExportarFotos = getString(R.string.msg_exportar_foto, nomeFotoSelecionada);
             dialogExcluir.setTitle(R.string.msg_title_exportar_foto);
-        }else{
-            mensagemExportarFotos = getString(R.string.msg_exportar_fotos,String.valueOf(getFilesSelected().size()));;
+        } else {
+            mensagemExportarFotos = getString(R.string.msg_exportar_fotos, String.valueOf(getFilesSelected().size()));
+            ;
             dialogExcluir.setTitle(R.string.msg_title_exportar_fotos);
         }
-
 
 
         dialogExcluir.setMessage(mensagemExportarFotos)
@@ -593,14 +587,16 @@ if(sizeFilesSelected == 0){
             }
         }).show();
     }
+
     private void excluirPasta() {
         PastaDAO pastaDAO = new PastaDAO(GaleriaActivity.this);
 
         pastaDAO.excluir(pastaSelecionada.getId());
 
-
-
-
+        for (Foto foto:
+        mFotos) {
+            new ImageDAO(GaleriaActivity.this).excluir(foto.getId());
+        }
 
         startActivity(new Intent(GaleriaActivity.this, MainActivity.class));
         Toast.makeText(GaleriaActivity.this, getString(R.string.msg_sucesso_deletar_pasta), Toast.LENGTH_SHORT).show();
@@ -718,16 +714,9 @@ if(sizeFilesSelected == 0){
 
 
                     if (sucesso) {
-                        Utils.notificar(recyclerView,  getString(R.string.msg_sucesso_alterar_senha));
-                        Intent it = new Intent(GaleriaActivity.this, GaleriaActivity.class);
-                        it.putExtra("nomePasta", nomePasta);
-                        startActivity(it);
-                        finish();
-
+                        Utils.notificar(recyclerView, getString(R.string.msg_sucesso_alterar_senha));
                     } else {
-
                         Utils.notificar(recyclerView, getString(R.string.msg_erro_criar_pasta));
-
                     }
                 } else {
                     Utils.notificar(recyclerView, getString(R.string.msg_pasta_nao_existe));
@@ -738,6 +727,7 @@ if(sizeFilesSelected == 0){
 
 
     }
+
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
@@ -756,6 +746,7 @@ if(sizeFilesSelected == 0){
                 break;
         }
     }
+
     private String queryName(ContentResolver resolver, Uri uri) {
         Cursor returnCursor =
                 resolver.query(uri, null, null, null, null);
@@ -933,6 +924,28 @@ if(sizeFilesSelected == 0){
 
     }
 
+    @Override
+    public void onBackPressed() {
+
+        List<PastaVO> listaPastas = pastaDAO.listarPastas(false);
+
+        if (listaPastas.isEmpty()) {
+            Intent it = new Intent(GaleriaActivity.this,
+                    ConfirmarPadraoActivity.class);
+
+
+            startActivity(it);
+            finish();
+        } else {
+
+            super.onBackPressed();
+            /*
+            startActivity(new Intent(GaleriaActivity.this, EscolherPastaActivity.class));
+            finish();
+*/
+        }
+    }
+
     private class SalvarImagem extends AsyncTask<Uri, Void, Boolean> {
         protected Boolean doInBackground(Uri... uri) {
 
@@ -944,7 +957,7 @@ if(sizeFilesSelected == 0){
                 ImageSaver imageSaver = new ImageSaver(GaleriaActivity.this);
                 ImageDAO imageDAO = new ImageDAO(GaleriaActivity.this);
                 imageSaver.save(bitmap, filename);
-                imageDAO.insereDado(filename, pastaSelecionada.getNomePasta());
+                imageDAO.insereDado(filename, pastaSelecionada.getTimestampCriacaoPasta());
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -957,7 +970,7 @@ if(sizeFilesSelected == 0){
             if (result) {
                 ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.GONE);
                 ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.GONE);
-                listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
+                listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getTimestampCriacaoPasta());
                 mFotos = Foto.getSpacePhotos(listaImagens);
 
                 ImageGalleryAdapter adapter = new ImageGalleryAdapter(GaleriaActivity.this, Foto.getSpacePhotos(listaImagens));
@@ -988,7 +1001,7 @@ if(sizeFilesSelected == 0){
                     ImageSaver imageSaver = new ImageSaver(GaleriaActivity.this);
                     ImageDAO imageDAO = new ImageDAO(GaleriaActivity.this);
                     imageSaver.save(bitmap, filename);
-                    imageDAO.insereDado(filename, pastaSelecionada.getNomePasta());
+                    imageDAO.insereDado(filename, pastaSelecionada.getTimestampCriacaoPasta());
                     progress++;
                     progressBar.setProgress(progress, true);
                     textViewDialog.setText(progress + "/" + quantidadeArquivos);
@@ -1009,7 +1022,7 @@ if(sizeFilesSelected == 0){
             ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.GONE);
             ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.GONE);
 
-            listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
+            listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getTimestampCriacaoPasta());
 
             views = new ArrayList<>();
             ImageGalleryAdapter adapter = new ImageGalleryAdapter(GaleriaActivity.this, Foto.getSpacePhotos(listaImagens));
@@ -1042,14 +1055,13 @@ if(sizeFilesSelected == 0){
                 ImageSaver imageSaver = new ImageSaver(GaleriaActivity.this);
                 ImageDAO imageDAO = new ImageDAO(GaleriaActivity.this);
                 imageSaver.save(bitmap, filename);
-                imageDAO.insereDado(filename, pastaSelecionada.getNomePasta());
+                imageDAO.insereDado(filename, pastaSelecionada.getTimestampCriacaoPasta());
 
             } catch (IOException e) {
                 e.printStackTrace();
 
                 return clipdatas;
             }
-
 
 
             return clipdatas;
@@ -1061,16 +1073,16 @@ if(sizeFilesSelected == 0){
             progress++;
             progressBar.setProgress(progress, true);
             textViewDialog.setText(progress + "/" + quantidadeArquivos);
-            if(progress <  quantidadeArquivos){
+            if (progress < quantidadeArquivos) {
 
                 new SalvarImagens2().execute(clipData);
 
-            }else {
+            } else {
 
                 ((TextView) findViewById(R.id.txt_pasta_vazia)).setVisibility(View.GONE);
                 ((Button) findViewById(R.id.btn_novas_fotos)).setVisibility(View.GONE);
 
-                listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getNomePasta());
+                listaImagens = imagemDAO.listarPorPasta(pastaSelecionada.getTimestampCriacaoPasta());
 
                 views = new ArrayList<>();
                 ImageGalleryAdapter adapter = new ImageGalleryAdapter(GaleriaActivity.this, Foto.getSpacePhotos(listaImagens));
@@ -1085,7 +1097,8 @@ if(sizeFilesSelected == 0){
 
 
     }
-    public void abrirDialogInfoInvisivel(View v){
+
+    public void abrirDialogInfoInvisivel(View v) {
         final androidx.appcompat.app.AlertDialog dialog;
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(GaleriaActivity.this)
@@ -1105,7 +1118,8 @@ if(sizeFilesSelected == 0){
 
         dialog.show();
     }
-    private void showProgressDialog(final int quantidadeArquivosAnexados){
+
+    private void showProgressDialog(final int quantidadeArquivosAnexados) {
 
         quantidadeArquivos = quantidadeArquivosAnexados;
         final View alertDialogView = LayoutInflater.from(GaleriaActivity.this).inflate
@@ -1114,7 +1128,6 @@ if(sizeFilesSelected == 0){
         textViewDialog.setText("0/" + quantidadeArquivosAnexados);
         progressBar = alertDialogView.findViewById(R.id.progressBar1);
         progressBar.setMax(quantidadeArquivosAnexados);
-
 
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(GaleriaActivity.this)
@@ -1129,7 +1142,6 @@ if(sizeFilesSelected == 0){
                         dialog.dismiss();
                     }
                 });
-
 
 
         dialog = builder.create();

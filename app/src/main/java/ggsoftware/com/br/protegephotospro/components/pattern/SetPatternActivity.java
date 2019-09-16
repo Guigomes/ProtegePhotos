@@ -119,7 +119,7 @@ public class SetPatternActivity extends BasePatternActivity
 
 
         if(isAlterarSenha){
-            setTitle("Alterar Senha da pasta");
+            setTitle(getString(R.string.txt_alterar_senha_pasta, getNomePasta()));
         }
 
         if (savedInstanceState == null) {

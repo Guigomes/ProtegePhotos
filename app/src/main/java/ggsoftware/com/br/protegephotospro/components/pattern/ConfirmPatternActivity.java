@@ -57,13 +57,14 @@ public class ConfirmPatternActivity extends BasePatternActivity
                 onCancel();
             }
         });
-        mRightButton.setText(R.string.pl_forgot_pattern);
+        mRightButton.setText(R.string. pl_forgot_pattern);
         mRightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onForgotPassword();
             }
         });
+        mRightButton.setVisibility(View.GONE);
         ViewAccessibilityCompat.announceForAccessibility(mMessageText, mMessageText.getText());
 
         if (savedInstanceState == null) {
@@ -121,6 +122,7 @@ public class ConfirmPatternActivity extends BasePatternActivity
 
     protected void onConfirmed() {
         setResult(RESULT_OK);
+
         finish();
     }
 

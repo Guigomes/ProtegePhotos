@@ -33,6 +33,8 @@
     <string name="btn_excluir">Delete</string>
     <string name="btn_configurar_pasta">Set up folder</string>
     <string name="btn_alterar_dados_pasta">Change folder data</string>
+    <string name="btn_criar_primeira_pasta">Create my first folder</string>
+
 
     <string name="btn_rdb_visivel">Visible</string>
     <string name="btn_rdb_invisivel">Invisible</string>
@@ -111,6 +113,7 @@
     <string name="txt_msg_demorar">Isso pode demorar um pouco</string>
     <string name="txt_visibilidade_pasta">What will be the visibility of the folder?</string>
     <string name="txt_pasta_principal">Main</string>
-
+    <string name="txt_alterar_senha_pasta">Change %1$s Folder Password</string>
+    <string name="txt_sem_pastas">Você não tem pastas</string>
 
 </resources>

@@ -183,7 +183,6 @@ public class EscolherPastaActivity extends AppCompatActivity {
                     Intent it = new Intent(EscolherPastaActivity.this, ConfirmarPadraoActivity.class);
                     it.putExtra("nomePasta", nomePastaEscolhida);
                     startActivity(it);
-
                 }
             });
 

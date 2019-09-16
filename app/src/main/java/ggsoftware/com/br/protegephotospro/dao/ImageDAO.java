@@ -62,14 +62,14 @@ public class ImageDAO {
         return listaImagens;
     }
 
-    public List<ImagemVO> listarPorPasta(String nomePasta) {
+    public List<ImagemVO> listarPorPasta(String timestampCriacaoPasta) {
         List<ImagemVO> listaImagens = new ArrayList<>();
         Cursor rs;
         String[] campos =  {banco.ID,banco.NOME, banco.DIRETORIO};
         db = banco.getReadableDatabase();
 
         String where = banco.DIRETORIO + " = ?";
-        String[] argumentos = {nomePasta};
+        String[] argumentos = {timestampCriacaoPasta};
         rs = db.query(banco.TABELA_IMAGEM, campos, where, argumentos, null, null, null, null);
         while (rs.moveToNext()) {
             ImagemVO imagemVO = new ImagemVO();

@@ -30,6 +30,7 @@
     <string name="btn_criar_pasta">Criar pasta</string>
     <string name="btn_rdb_visivel">Visível</string>
     <string name="btn_rdb_invisivel">Invisível</string>
+    <string name="btn_criar_primeira_pasta">Criar minha primeira pasta</string>
 
     <!-- Mensagens  -->
     <string name="msg_padrao_alterar">Crie um novo padrão para a pasta %1$s</string>
@@ -102,7 +103,8 @@
     <string name="txt_msg_demorar">Isso pode demorar um pouco</string>
     <string name="txt_pasta_principal">Principal</string>
     <string name="txt_informe_nome_pasta">Informe o nome da pasta</string>
-
+    <string name="txt_alterar_senha_pasta">Alterar Senha da pasta %1$s</string>
+    <string name="txt_sem_pastas">Você não tem pastas</string>
 
 
 
