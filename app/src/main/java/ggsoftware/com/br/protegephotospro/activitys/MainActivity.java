@@ -133,7 +133,26 @@ public  void criarNovaPasta(View v){
 
 
 }
+    public void abrirDialogInfoInvisivel(View v) {
+        final androidx.appcompat.app.AlertDialog dialog;
 
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this)
+                .setTitle(getString(R.string.title_criar_nova_pasta_informacoes))
+                .setMessage(getString(R.string.txt_pasta_invisivel))
+                .setPositiveButton(R.string.btn_entendi, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+
+                })
+
+                .setCancelable(true);
+
+        dialog = builder.create();
+
+        dialog.show();
+    }
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();

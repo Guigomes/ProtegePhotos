@@ -96,15 +96,15 @@
     <!-- Textos -->
 
     <string name="txt_informe_nome_novo_pasta">Informe o novo nome da pasta</string>
-    <string name="txt_protegendo_fotos">Protegendo suas fotos</string>
+    <string name="txt_protegendo_fotos">Ao importar fotos para o aplicativo, elas NÃO serão excluídas do local de origem. Para aumentar sua segurança, mantenha as fotos que deseja proteger somente no aplicativo. Você pode exporta-las de volta para o seu celulhar a qualquer momento.</string>
     <string name="txt_pergunta_invisivel">O que é uma pasta invisível?</string>
     <string name="txt_visibilidade_pasta">Qual será a visibilidade da pasta?</string>
-    <string name="txt_pasta_invisivel">uma pasta invisivel</string>
+    <string name="txt_pasta_invisivel">Uma pasta invisível não aparece na sua lista de pastas. Para abri-la você pode selecionar qualquer pasta visível e fazer o padrão da pasta invísivel. Se todas as suas pastas forem invisíveis, a primeira tela do aplicativo já pedirá a senha da pasta que deseja acessar, sem mostrar a lista de pastas disponíveis. Assim, você pode ter mais privacidade sobre quais pastas está protegendo.</string>
     <string name="txt_msg_demorar">Isso pode demorar um pouco</string>
     <string name="txt_pasta_principal">Principal</string>
     <string name="txt_informe_nome_pasta">Informe o nome da pasta</string>
     <string name="txt_alterar_senha_pasta">Alterar Senha da pasta %1$s</string>
-    <string name="txt_sem_pastas">Você não tem pastas</string>
+    <string name="txt_sem_pastas">Seja bem vindo(a) ao Protege Fotos. Você pode criar várias pastas para guardar suas fotos com segurança, isoladas do resto do seu celular. Pressione o botão abaixo para criar sua primeira pasta.</string>
 
 
 

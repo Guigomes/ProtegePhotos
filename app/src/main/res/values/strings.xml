@@ -107,13 +107,13 @@
 
     <string name="txt_informe_nome_pasta">What will be the name of your folder?</string>
     <string name="txt_informe_nome_novo_pasta">Informe o novo nome da pasta</string>
-    <string name="txt_protegendo_fotos">Protegendo suas fotos</string>
+    <string name="txt_protegendo_fotos">When you import photos into the app, they will NOT be deleted from their source location. For added security, keep the photos you want to protect in the app only. You can export them back to your cell phone at any time.</string>
     <string name="txt_pergunta_invisivel">What is an invisible folder?</string>
-    <string name="txt_pasta_invisivel">an invisible folder</string>
-    <string name="txt_msg_demorar">Isso pode demorar um pouco</string>
+    <string name="txt_pasta_invisivel">An invisible folder does not appear in your folder list. To open it you can select any visible folder and make the pattern of the invisible folder. If all your folders are invisible, the first screen of the application will already ask for the password of the folder you want to access, without showing the list of available folders. This gives you more privacy about which folders you are protecting.</string>
+    <string name="txt_msg_demorar">This may take a while</string>
     <string name="txt_visibilidade_pasta">What will be the visibility of the folder?</string>
     <string name="txt_pasta_principal">Main</string>
     <string name="txt_alterar_senha_pasta">Change %1$s Folder Password</string>
-    <string name="txt_sem_pastas">Você não tem pastas</string>
+    <string name="txt_sem_pastas">Welcome to Protect Photos. You can create multiple folders to store your photos securely, isolated from the rest of your phone. Press the button below to create your first folder.</string>
 
 </resources>
